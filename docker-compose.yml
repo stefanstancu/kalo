@@ -7,3 +7,16 @@ services:
             POSTGRES_USER: user
         ports:
             - 5432:5432
+    backend:
+        build: .
+        environment:
+            FLASK_APP: /var/www/app/src/main.py
+        ports:
+            - 5000:5000
+
+    nginx:
+        build: nginx
+        volumes:
+            - ./app/static:/usr/share/nginx/html
+        ports:
+            - 80:80
