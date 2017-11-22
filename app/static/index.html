@@ -32,13 +32,13 @@
 
 <!-- Primary Page Layout
 –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-<div  ng-app="myApp" ng-controller="myCtrl" class="container" style="margin-top: 10%">
+<div  ng-app="myApp" class="container" style="margin-top: 10%">
     <h4>Food Item</h4>
-    <form>
+    <form ng-controller="myCtrl" ng-submit="saveFood()">
         <div class="row">
             <div class="six columns">
                 <label for="name_input">Name</label>
-                <input class="u-full-width" id="name_input" type="text"/>
+                <input class="u-full-width" id="name_input" ng-model="food.name" type="text"/>
             </div>
         </div>
         <div class="row">
@@ -72,12 +72,25 @@
                 <input class="button-primary u-full-width" type="submit" value="submit">
             </div>
         </div>
+        <p>{{food.name}}</p>
     </form>
     <script>
         var app = angular.module('myApp', []);
-        app.controller('myCtrl', function($scope, $http){
-            $http.get("")
-        })
+        app.controller('myCtrl', [ '$scope', '$http', function($scope, $http){
+            $scope.user = {};
+            $scope.results = [];
+
+            $scope.food = "Name";
+
+            $scope.saveFood = function () {
+                $http.post("http://localhost:5000/api/savefood", {
+                    'name': $scope.food.name,
+                    'calories': 100
+                },
+                function(response){ $scope.results = response; },
+                function(failure){console.log("failed: (", failure); });
+            }
+        }]);
     </script>
 </div>
 

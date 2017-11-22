@@ -11,8 +11,10 @@ services:
         build: .
         environment:
             FLASK_APP: /var/www/app/src/main.py
+        volumes:
+            - ./app:/var/www/app
         ports:
-            - 5000:5000
+            - "5000:5000"
 
     nginx:
         build: nginx
