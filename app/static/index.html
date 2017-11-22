@@ -71,9 +71,8 @@
                 <button @click="sendFood" type="button" class="button six columns">SAVE</button>
             </div>
         </div>
-        <p>{{food.name}}</p>
     </form>
-    <p>test: {{food.name}}</p>
+    <p v-show="saveResponse != 0"> {{saveResponse}}</p>
     <script>
         var app = new Vue({
             el: '#app',
@@ -86,15 +85,16 @@
                     carbs: 0,
                     fats: 0,
                     protein: 0
-                }
+                },
+                saveResponse: 0
             },
             methods: {
                 sendFood: function () {
-                    axios.post('http://localhost:5000/api/savefood', {
-                        name:"test"
-                    }).then(function (response) {
-                        console.log(response);
-                    }).catch(function (error) {
+                    saveResponse = "loading..."
+                    axios.post('http://localhost:5000/api/savefood', this.food
+                    ).then(response => {
+                        this.saveResponse = response.data;
+                    }).catch(error => {
                         console.log(error);
                     });
                 }
