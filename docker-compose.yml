@@ -11,6 +11,7 @@ services:
         build: .
         environment:
             FLASK_APP: /var/www/app/src/main.py
+            FLASK_DEBUG: 1
         volumes:
             - ./app:/var/www/app
         ports:
