@@ -3,7 +3,7 @@ from os import sys
 from database import db_session
 from flask import Flask, request
 from flask_cors import CORS
-from models import Food
+from models import Food, Meal
 
 app = Flask(__name__)
 CORS(app)
@@ -37,6 +37,9 @@ def save_meal():
             try:
                 data = request.get_json()
                 app.logger.info('savemeal data: ' + str(data))
+                meal = Meal('breakfast', 100, 100, 100, 10)
+                db_session.add(meal)
+                db_session.commit()
             except Exception as ex:
                 app.logger.info(ex)
                 return 'Error saving meal'

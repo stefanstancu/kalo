@@ -34,3 +34,32 @@ class Food(Base):
                 self.protein,
                 self.price
                 )
+
+class Meal(Base):
+    __tablename__ = 'meal_items'
+    id = Column(Integer, primary_key=True)
+    name = Column(String(100), unique=False, nullable=False)
+    calories = Column(Float)
+    carbohydrates = Column(Float)
+    fat = Column(Float)
+    protein = Column(Float)
+    price = Column(Float)
+
+    def __init__(self, name, calories, carbohydrates, fat, protein, price=0):
+        self.name = name
+        self.calories = calories
+        self.carbohydrates = carbohydrates
+        self.fat = fat
+        self.protein = protein
+        self.price = price
+
+    def __repr__(self):
+        return 'meal ({}):\n Cal: {}\n  Carb: {}\n  Fat: {}\n  Prot: {}\n  $: {}\n'.format(
+                self.name,
+                self.calories,
+                self.carbohydrates,
+                self.fat,
+                self.protein,
+                self.price
+                )
+
