@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Float, String, Integer
+from sqlalchemy import Column, Float, String, Integer, Date
 from database import Base
 
 class Food(Base):
@@ -39,14 +39,16 @@ class Meal(Base):
     __tablename__ = 'meal_items'
     id = Column(Integer, primary_key=True)
     name = Column(String(100), unique=False, nullable=False)
+    date = Column(Date, nullable=False)
     calories = Column(Float)
     carbohydrates = Column(Float)
     fat = Column(Float)
     protein = Column(Float)
     price = Column(Float)
 
-    def __init__(self, name, calories, carbohydrates, fat, protein, price=0):
+    def __init__(self, name, date, calories, carbohydrates, fat, protein, price=0):
         self.name = name
+        self.date = date
         self.calories = calories
         self.carbohydrates = carbohydrates
         self.fat = fat
@@ -54,8 +56,9 @@ class Meal(Base):
         self.price = price
 
     def __repr__(self):
-        return 'meal ({}):\n Cal: {}\n  Carb: {}\n  Fat: {}\n  Prot: {}\n  $: {}\n'.format(
+        return 'meal ({}, {}):\n Cal: {}\n  Carb: {}\n  Fat: {}\n  Prot: {}\n  $: {}\n'.format(
                 self.name,
+                self.date,
                 self.calories,
                 self.carbohydrates,
                 self.fat,
