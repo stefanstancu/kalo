@@ -64,20 +64,22 @@
     </div>
     <div class="row">
         <div class="six columns">
-            <h4>Food Entry</h4>
+            <h4>Meal Entry</h4>
             <form>
                 <div class="row">
-                    <div class="row">
-                            <label class="eight columns">Food Item</label>
-                            <label class="four columns">Amount</label>
-                    </div>
-                    <div class="row" v-for="(item, index) in meal">
-                            <input class="eight columns" type="text" v-model="item.name"/>
-                            <input class="four columns" type="number" v-model="item.amount"/>
-                    </div>
-                    <div class="row">
-                        <button @click="addItem" type="button" class="button u-full-width"><p style="font-size:4em">+</p></button>
-                    </div>
+                        <label class="eight columns">Food Item</label>
+                        <label class="four columns">Amount</label>
+                </div>
+                <div class="row" v-for="(item, index) in meal">
+                        <input class="six columns" type="text" v-model="item.name"/>
+                        <input class="three columns" type="number" v-model="item.amount"/>
+                        <button @click="removeItem(index)" class="button three columns" type="button">x</button>
+                </div>
+                <div class="row">
+                    <button @click="addItem" type="button" class="button u-full-width"><p style="font-size:4em">+</p></button>
+                </div>
+                <div class="row">
+                    <button @click="saveMeal" type="button" class="button u-full-width">SAVE</button>
                 </div>
             </form>
         </div>
@@ -134,7 +136,7 @@
                     fat: 0,
                     protein: 0
                 },
-                meal: [],
+                meal: [{name:"", amount:0}],
                 saveResponse: 0
             },
             methods: {
@@ -153,6 +155,11 @@
                         name:"",
                         amount: 0
                     });
+                },
+                removeItem: function (index) {
+                    this.meal.splice(index, 1);
+                },
+                saveMeal: function (){
                 }
             }
         })
