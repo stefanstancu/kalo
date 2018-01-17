@@ -30,6 +30,19 @@ def save_food():
     else:
         return 'GET'
 
+# Endpoint to save new meal
+@app.route('/api/savemeal', methods=['GET', 'POST', 'OPTIONS'])
+def save_meal():
+        if request.method == 'POST':
+            try:
+                data = request.get_json()
+                app.logger.info('savemeal data: ' + str(data))
+            except Exception as ex:
+                app.logger.info(ex)
+                return 'Error saving meal'
+            return 'Meal Saved'
+        else:
+            return 'GET'
 
 @app.teardown_appcontext
 def shutdown_session(exception=None):
