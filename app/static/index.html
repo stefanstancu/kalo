@@ -44,20 +44,27 @@
         <thead>
             <tr>
                 <th></th>
+                <th v-for="meal in meals">
+                    {{meal.name}}
+                </th>
             </tr>
         </thead>
         <tbody>
             <tr>
                 <th>Calories</th>
+                <th v-for="meal in meals">{{meal.calories}}</th>
             </tr>
             <tr>
                 <th>Carbohydrates</th>
+                <th v-for="meal in meals">{{meal.carbohydrates}}</th>
             </tr>
             <tr>
-                <th>Fats</th>
+                <th>Fat</th>
+                <th v-for="meal in meals">{{meal.fat}}</th>
             </tr>
             <tr>
                 <th>Protein</th>
+                <th v-for="meal in meals">{{meal.protein}}</th>
             </tr>
         </tbody>
         </table>
@@ -145,6 +152,7 @@
                     protein: 0
                 },
                 meal: {name:"", date:"", items: [{name:"", amount:0}]},
+                meals: [],
                 saveResponse: 0
             },
             methods: {
@@ -169,6 +177,15 @@
                 removeItem: function (index) {
                     this.meal.items.splice(index, 1);
                 }
+            },
+            mounted() {
+                // request the meals eaten today
+                axios.post('http://localhost:5000/api/getmeals',this.meals
+                    ).then(response => {
+                        this.meals = response.data;
+                    }).catch(error => {
+                        console.log(error);
+                    });
             }
         })
     </script>
