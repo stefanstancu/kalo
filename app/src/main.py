@@ -1,6 +1,8 @@
 import datetime
 import json
 
+from meal import food_to_meal
+
 from os import sys
 from database import db_session
 from flask import Flask, request
@@ -40,7 +42,7 @@ def save_meal():
                 data = request.get_json()
                 app.logger.info('savemeal data: ' + str(data))
                 date = datetime.date.today()
-                meal = Meal('breakfast', date, 100, 100, 100, 10)
+                meal = food_to_meal(data['name'], data['foods']) 
                 db_session.add(meal)
                 db_session.commit()
             except Exception as ex:
