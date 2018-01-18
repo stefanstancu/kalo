@@ -42,7 +42,7 @@ def save_meal():
                 data = request.get_json()
                 app.logger.info('savemeal data: ' + str(data))
                 date = datetime.date.today()
-                meal = food_to_meal(data['name'], data['foods']) 
+                meal = food_to_meal(data['name'], data['items']) 
                 db_session.add(meal)
                 db_session.commit()
             except Exception as ex:

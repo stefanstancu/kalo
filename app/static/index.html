@@ -153,11 +153,12 @@
                 },
                 meal: {name:"", date:"", items: [{name:"", amount:0}]},
                 meals: [],
-                saveResponse: 0
+                saveResponse: 0,
+                saveMealResp:0
             },
             methods: {
                 sendFood: function () {
-                    saveResponse = "loading..."
+                    saveResponse = "loading...";
                     axios.post('http://localhost:5000/api/savefood', this.food
                     ).then(response => {
                         this.saveResponse = response.data;
@@ -166,6 +167,13 @@
                     });
                 },
                 saveMeal: function (){
+                    saveMealResp = "adding...";
+                    axios.post('http://localhost:5000/api/savemeal', this.meal
+                    ).then(response => {
+                        this.saveMealResponse = response.data;
+                    }).catch(error => {
+                        console.log(error);
+                    });
                 },
                 addItem: function() {
                     var elem = document.createElement('div');
