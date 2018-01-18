@@ -144,7 +144,7 @@
                     fat: 0,
                     protein: 0
                 },
-                meal: {name:"", items: [{name:"", amount:0}]},
+                meal: {name:"", date:"", items: [{name:"", amount:0}]},
                 saveResponse: 0
             },
             methods: {
@@ -157,6 +157,8 @@
                         console.log(error);
                     });
                 },
+                saveMeal: function (){
+                },
                 addItem: function() {
                     var elem = document.createElement('div');
                     this.meal.items.push({
@@ -166,8 +168,6 @@
                 },
                 removeItem: function (index) {
                     this.meal.items.splice(index, 1);
-                },
-                saveMeal: function (){
                 }
             }
         })
