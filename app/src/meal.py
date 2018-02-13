@@ -4,8 +4,9 @@ from models import Food, Meal
 
 def food_to_meal(name, foods):
     """ Converts the food dictionary to a meal object to save in the db """
-
-    # Query all the foods given
+    
+    foods = _build_food_dict(foods)
+    app.logger.info(foods)
     try:
         saved_food = db_session.query(Food).filter(Food.name.in_(foods.keys())).all()
     except Exception as ex:
@@ -21,3 +22,13 @@ def food_to_meal(name, foods):
 
     return meal
 
+def _build_food_dict(foods):
+    """ 
+        Changes the format of the data for better readability during proccessing
+        Goes from {name:"string", amount:int} to {string: int}
+    """
+    dct = {}
+    for item in foods:
+        dct[item['name']] = item['amount']
+
+    return dct

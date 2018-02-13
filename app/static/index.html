@@ -97,6 +97,7 @@
                     <button @click="saveMeal" type="button" class="button u-full-width">SAVE</button>
                 </div>
             </form>
+            <p v-show="saveMealResp != 0">{{saveMealResp}}</p>
         </div>
         <div class="six columns">
             <h4>Food Item</h4>
@@ -135,9 +136,9 @@
                         <button @click="sendFood" type="button" class="button u-full-width">SAVE</button>
                 </div>
             </form>
+            <p v-show="saveResponse != 0"> {{saveResponse}}</p>
         </div>
     </div>
-    <p v-show="saveResponse != 0"> {{saveResponse}}</p>
     <script>
         var app = new Vue({
             el: '#app',
@@ -187,7 +188,6 @@
                 }
             },
             mounted() {
-                // request the meals eaten today
                 axios.post('http://localhost:5000/api/getmeals',this.meals
                     ).then(response => {
                         this.meals = response.data;

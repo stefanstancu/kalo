@@ -12,11 +12,6 @@ from models import Food, Meal
 app = Flask(__name__)
 CORS(app)
 
-@app.route('/')
-def hello_world():
-    return 'What\'s good?'
-
-
 # Endpoint to save new food
 @app.route('/api/savefood', methods=['GET', 'POST', 'OPTIONS'])
 def save_food():
@@ -41,12 +36,13 @@ def save_meal():
             try:
                 data = request.get_json()
                 app.logger.info('savemeal data: ' + str(data))
-                date = datetime.date.today()
                 meal = food_to_meal(data['name'], data['items']) 
+                if isinstance(meal, str):
+                    return meal
                 db_session.add(meal)
                 db_session.commit()
             except Exception as ex:
-                app.logger.info(ex)
+                # app.logger.info(ex)
                 return 'Error saving meal'
             return 'Meal Saved'
         else:
