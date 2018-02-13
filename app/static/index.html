@@ -97,7 +97,7 @@
                     <button @click="saveMeal" type="button" class="button u-full-width">SAVE</button>
                 </div>
             </form>
-            <p v-show="saveMealResp != 0">{{saveMealResp}}</p>
+            <p v-show="saveMealResponse != 0">{{saveMealResponse}}</p>
         </div>
         <div class="six columns">
             <h4>Food Item</h4>
@@ -155,7 +155,7 @@
                 meal: {name:"", date:"", items: [{name:"", amount:0}]},
                 meals: [],
                 saveResponse: 0,
-                saveMealResp:0
+                saveMealResponse:0
             },
             methods: {
                 sendFood: function () {
