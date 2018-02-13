@@ -35,8 +35,8 @@ def save_meal():
         if request.method == 'POST':
             try:
                 data = request.get_json()
-                app.logger.info('savemeal data: ' + str(data))
-                meal = food_to_meal(data['name'], data['items']) 
+                app.logger.debug('savemeal data: ' + str(data))
+                meal = food_to_meal(data['name'], data['items'], app) 
                 if isinstance(meal, str):
                     return meal
                 db_session.add(meal)

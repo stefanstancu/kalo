@@ -2,11 +2,11 @@ import datetime
 from database import db_session
 from models import Food, Meal
 
-def food_to_meal(name, foods):
+def food_to_meal(name, foods, app):
     """ Converts the food dictionary to a meal object to save in the db """
     
     foods = _build_food_dict(foods)
-    app.logger.info(foods)
+    app.logger.debug(foods)
     try:
         saved_food = db_session.query(Food).filter(Food.name.in_(foods.keys())).all()
     except Exception as ex:
@@ -29,6 +29,6 @@ def _build_food_dict(foods):
     """
     dct = {}
     for item in foods:
-        dct[item['name']] = item['amount']
+        dct[item['name']] = float(item['amount'])
 
     return dct
