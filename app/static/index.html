@@ -78,7 +78,7 @@
                     <label class="six columns">Date</label>   
                 </div>
                 <div class="row">
-                    <input class="six columns" type="text" v-model="meal.name"/>
+                    <input class="six columns" type="text" name="Mean Name" v-model="meal.name"/>
                     <input class="six columns" type="date" v-model="meal.date"/>
                 </div>
                 <div class="row">
@@ -86,10 +86,13 @@
                         <label class="three columns">Amount</label>
                 </div>
                 <div class="row" v-for="(item, index) in meal.items">
-                        <input class="six columns" type="text" v-model="item.name"/>
+                        <input class="six columns" type="text" list="item_name" v-model="item.name"/>
                         <input class="three columns" type="number" v-model="item.amount"/>
                         <button @click="removeItem(index)" class="button three columns" type="button">x</button>
                 </div>
+                <datalist id="item_name">
+                    <option v-for="food in foods">{{food}}</option>
+                </datalist>
                 <div class="row">
                     <button @click="addItem" type="button" class="button u-full-width"><p style="font-size:4em">+</p></button>
                 </div>
@@ -154,6 +157,7 @@
                 },
                 meal: {name:"", date:"", items: [{name:"", amount:0}]},
                 meals: [],
+                foods: ["Chicken1", "test"],
                 saveResponse: 0,
                 saveMealResponse:0
             },
@@ -191,6 +195,12 @@
                 axios.post('http://localhost:5000/api/getmeals',this.meals
                     ).then(response => {
                         this.meals = response.data;
+                    }).catch(error => {
+                        console.log(error);
+                    });
+                axios.post('http://localhost:5000/api/getfoods', this.foods
+                    ).then(response => {
+                        this.foods = response.data;
                     }).catch(error => {
                         console.log(error);
                     });

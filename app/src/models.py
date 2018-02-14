@@ -35,6 +35,9 @@ class Food(Base):
                 self.price
                 )
 
+    def __name__(self):
+        return self.name
+
 class Meal(Base):
     __tablename__ = 'meal_items'
     id = Column(Integer, primary_key=True)

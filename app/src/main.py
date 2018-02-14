@@ -27,7 +27,7 @@ def save_food():
             return 'Error saving food'
         return 'Food Saved'
     else:
-        return 'GET'
+        return '-'
 
 # Endpoint to save new meal
 @app.route('/api/savemeal', methods=['GET', 'POST', 'OPTIONS'])
@@ -46,7 +46,7 @@ def save_meal():
                 return 'Error saving meal'
             return 'Meal Saved'
         else:
-            return 'GET'
+            return '-'
 
 # Endpoint to request meals eaten in a specific day
 @app.route('/api/getmeals', methods=['GET','POST', 'OPTIONS'])
@@ -63,7 +63,23 @@ def get_meals():
             return 'Error getting meals'
         return meals
     else:
-        return 'GET'
+        return '-'
+
+# Endpoint to request foods that have been saved by the user
+@app.route('/api/getfoods', methods=['GET','POST', 'OPTIONS'])
+def get_foods():
+    if request.method == 'POST':
+        try:
+            app.logger.info('getfood request')
+            foods = db_session.query(Food).all()
+            foods = json.dumps([i.name for i in foods])
+            app.logger.info(foods)
+        except Exception as ex:
+            app.logger.info(ex)
+            return 'Error getting foods'
+        return foods
+    else:
+        return '-'
 
 @app.teardown_appcontext
 def shutdown_session(exception=None):
