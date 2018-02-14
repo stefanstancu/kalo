@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Kalo</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Mobile Specific Metas
+    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- FONT
+    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+
+    <!-- CSS
+    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/skeleton.css">
+
+    <!-- Favicon
+    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <link rel="icon" type="image/png" href="images/favicon.png">
+
+    <!-- Libraries
+    __________________________________________________ -->
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+</head>
+<body>
+
+<div id="app" class="container" style="margin-top: 2.5%">
+    <div class="row">
+        <div class="u-full-width">
+            <h1 style="text-align:center">KALO</h1>
+            <hr>
+        </div>
+    </div>
+    <h2>Today</h2>
+    <div class="row">
+        <table class="u-full-width">
+        <thead>
+            <tr>
+                <th></th>
+                <th v-for="meal in meals">
+                    {{meal.name}}
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th>Calories</th>
+                <th v-for="meal in meals">{{meal.calories}}</th>
+            </tr>
+            <tr>
+                <th>Carbohydrates</th>
+                <th v-for="meal in meals">{{meal.carbohydrates}}</th>
+            </tr>
+            <tr>
+                <th>Fat</th>
+                <th v-for="meal in meals">{{meal.fat}}</th>
+            </tr>
+            <tr>
+                <th>Protein</th>
+                <th v-for="meal in meals">{{meal.protein}}</th>
+            </tr>
+        </tbody>
+        </table>
+    </div>
+    <div class="row">
+        <div class="six columns">
+            <h4>Meal Entry</h4>
+            <form>
+                <div class="row">
+                    <label class="six columns">Meal Name</label>   
+                    <label class="six columns">Date</label>   
+                </div>
+                <div class="row">
+                    <input class="six columns" type="text" name="Mean Name" v-model="meal.name"/>
+                    <input class="six columns" type="date" v-model="meal.date"/>
+                </div>
+                <div class="row">
+                        <label class="six columns">Food Item</label>
+                        <label class="three columns">Amount</label>
+                </div>
+                <div class="row" v-for="(item, index) in meal.items">
+                        <input class="six columns" type="text" list="item_name" v-model="item.name"/>
+                        <input class="three columns" type="number" v-model="item.amount"/>
+                        <button @click="removeItem(index)" class="button three columns" type="button">x</button>
+                </div>
+                <datalist id="item_name">
+                    <option v-for="food in foods">{{food}}</option>
+                </datalist>
+                <div class="row">
+                    <button @click="addItem" type="button" class="button u-full-width"><p style="font-size:4em">+</p></button>
+                </div>
+                <div class="row">
+                    <button @click="saveMeal" type="button" class="button u-full-width">SAVE</button>
+                </div>
+            </form>
+            <p v-show="saveMealResponse != 0">{{saveMealResponse}}</p>
+        </div>
+        <div class="six columns">
+            <h4>Food Item</h4>
+            <form>
+                <div class="row">
+                        <label for="name_input">Name</label>
+                        <input class="u-full-width" id="name_input" type="text" v-model="food.name"/>
+                </div>
+                <div class="row">
+                    <div class="eight columns">
+                        <label for="measure_input">Serving size</label>
+                        <input class="u-full-width" id="measure_input" type="number" v-model="food.measure"/>
+                    </div>
+                    <div class="four columns">
+                        <label for="unit_input">Unit </label>
+                        <select class="u-full-width" id="unit_input" v-model="food.unit">
+                            <option value="g">g</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="six columns">
+                        <label style="padding-bottom: 7px; padding-top: 7px; margin-bottom: 15px; border: 1px;" for="calories_input">Calories</label>
+                        <label style="padding-bottom: 7px; padding-top: 7px; margin-bottom: 15px; border: 1px;" for="carbs_input">Carbohydrates</label>
+                        <label style="padding-bottom: 7px; padding-top: 7px; margin-bottom: 15px; border: 1px;" for="fats_input">Fats</label>
+                        <label style="padding-bottom: 7px; padding-top: 7px; margin-bottom: 15px; border: 1px;" for="protein_input">Protein</label>
+                    </div>
+                    <div class="six columns">
+                        <input class="u-full-width" id="calories_input" type="number" v-model="food.calories"/>
+                        <input class="u-full-width" id="carbs_input" type="number" v-model="food.carbohydrates"/>
+                        <input class="u-full-width" id="fats_input" type="number" v-model="food.fat"/>
+                        <input class="u-full-width" id="protein_input" type="number" v-model="food.protein"/>
+                    </div>
+                </div>
+                <div class="row">
+                        <button @click="sendFood" type="button" class="button u-full-width">SAVE</button>
+                </div>
+            </form>
+            <p v-show="saveResponse != 0"> {{saveResponse}}</p>
+        </div>
+    </div>
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                food: {
+                    name: '',
+                    measure: 0,
+                    unit: '',
+                    calories: 0,
+                    carbohydrates: 0,
+                    fat: 0,
+                    protein: 0
+                },
+                meal: {name:"", date:"", items: [{name:"", amount:0}]},
+                meals: [],
+                foods: ["Chicken1", "test"],
+                saveResponse: 0,
+                saveMealResponse:0
+            },
+            methods: {
+                sendFood: function () {
+                    saveResponse = "loading...";
+                    axios.post('http://localhost:5000/api/savefood', this.food
+                    ).then(response => {
+                        this.saveResponse = response.data;
+                    }).catch(error => {
+                        console.log(error);
+                    });
+                },
+                saveMeal: function (){
+                    saveMealResp = "adding...";
+                    axios.post('http://localhost:5000/api/savemeal', this.meal
+                    ).then(response => {
+                        this.saveMealResponse = response.data;
+                    }).catch(error => {
+                        console.log(error);
+                    });
+                },
+                addItem: function() {
+                    var elem = document.createElement('div');
+                    this.meal.items.push({
+                        name:"",
+                        amount: 0
+                    });
+                },
+                removeItem: function (index) {
+                    this.meal.items.splice(index, 1);
+                }
+            },
+            mounted() {
+                axios.post('http://localhost:5000/api/getmeals',this.meals
+                    ).then(response => {
+                        this.meals = response.data;
+                    }).catch(error => {
+                        console.log(error);
+                    });
+                axios.post('http://localhost:5000/api/getfoods', this.foods
+                    ).then(response => {
+                        this.foods = response.data;
+                    }).catch(error => {
+                        console.log(error);
+                    });
+            }
+        })
+    </script>
+</div>
+
+</body>
+</html>
