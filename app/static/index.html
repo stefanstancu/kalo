@@ -6,6 +6,8 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
+    <meta name="google-signin-client_id" content="1012179851696-fkknaicl6dg4g7cplk005v5desvddovj.apps.googleusercontent.com">
+
     <!-- Mobile Specific Metas
     –––––––––––––––––––––––––––––––––––––––––––––––––– -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -25,6 +27,7 @@
 
     <!-- Libraries
     __________________________________________________ -->
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
@@ -36,6 +39,7 @@
         <div class="u-full-width">
             <h1 style="text-align:center">KALO</h1>
             <hr>
+            <div class="g-signin2" data-onsuccess="onSignIn"></div>
         </div>
     </div>
     <h2>Today</h2>
@@ -143,6 +147,10 @@
         </div>
     </div>
     <script>
+        function onSignIn(googleUser){
+            var id_token = googleUser.getAuthResponse().id_token;
+            axios.post('http://localhost:5000/api/login', {token: id_token});
+        }
         var app = new Vue({
             el: '#app',
             data: {

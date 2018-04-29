@@ -9,6 +9,8 @@ from flask import Flask, request
 from flask_cors import CORS
 from models import Food, Meal
 
+import auth
+
 app = Flask(__name__)
 CORS(app)
 
@@ -78,6 +80,22 @@ def get_foods():
             app.logger.info(ex)
             return 'Error getting foods'
         return foods
+    else:
+        return '-'
+
+# Login endpoint
+@app.route('/api/login', methods=['GET', 'POST', 'OPTIONS'])
+def login():
+    if request.method == 'POST':
+        try:
+            app.logger.info('login attempt')
+            data = request.get_json()
+            app.logger.info('user id: ' + auth.login(data['token']))
+
+        except Exception as ex:
+            app.logger.info(ex)
+            return 'Error getting foods'
+        return 'login successuful'
     else:
         return '-'
 
