@@ -153,11 +153,17 @@
     <script>
         function onSignIn(googleUser){
             var id_token = googleUser.getAuthResponse().id_token;
-            Cookies.set('kalo_id', id_token);
             app.loggedIn = true;
             axios.post('http://localhost:5000/api/login', {
                     profile: googleUser.getBasicProfile(),
                     token: id_token
+            },{
+                withCredentials: true
+            }).then(response => {
+                app.getFoods();
+                app.getMeals();
+            }).catch(error => {
+                console.log(error);
             });
         }
         
@@ -166,7 +172,7 @@
 			auth2.signOut().then(function () {
 				console.log('User signed out.');
 				app.loggedIn = false;
-				Cookies.remove('kalo_id');
+				Cookies.remove('session');
 			});
 		}
 
@@ -192,7 +198,7 @@
             methods: {
                 sendFood: function () {
                     saveResponse = "loading...";
-                    axios.post('http://localhost:5000/api/savefood', this.food
+                    axios.post('http://localhost:5000/api/savefood', this.food, {withCredentials: true}
                     ).then(response => {
                         this.saveResponse = response.data;
                     }).catch(error => {
@@ -201,7 +207,7 @@
                 },
                 saveMeal: function (){
                     saveMealResp = "adding...";
-                    axios.post('http://localhost:5000/api/savemeal', this.meal
+                    axios.post('http://localhost:5000/api/savemeal', this.meal, {withCredentials: true}
                     ).then(response => {
                         this.saveMealResponse = response.data;
                     }).catch(error => {
@@ -223,29 +229,34 @@
 				},
 				signOut: function (){
 					onSignOut();
-				}
+				},
+                getMeals: function () {
+                    axios.post('http://localhost:5000/api/getmeals', {}, {withCredentials: true}
+                        ).then(response => {
+                            this.meals = response.data;
+                        }).catch(error => {
+                            console.log(error);
+                        });
+                },
+                getFoods: function () {
+                    axios.post('http://localhost:5000/api/getfoods', {}, {withCredentials: true}
+                        ).then(response => {
+                            this.foods = response.data;
+                        }).catch(error => {
+                            console.log(error);
+                        });
+                }
             },
             mounted() {
-                var token = Cookies.get('kalo_id');
+                var token = Cookies.get('session');
                 if(token){
                     this.loggedIn = true;
+                    this.getMeals();
+                    this.getFoods();
                 }
-                axios.post('http://localhost:5000/api/getmeals',{'token': token}
-                    ).then(response => {
-                        this.meals = response.data;
-                    }).catch(error => {
-                        console.log(error);
-                    });
-				axios.post('http://localhost:5000/api/getfoods', {'token': token}
-                    ).then(response => {
-                        this.foods = response.data;
-                    }).catch(error => {
-                        console.log(error);
-                    });
             }
         });
     </script>
 </div>
-
 </body>
 </html>

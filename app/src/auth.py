@@ -15,7 +15,7 @@ def login(data):
     user_id = _validate_user(data['token'])
     session[data['token']] = user_id
 
-def _validate_user(token):
+def validate_user(token):
     ''' validates the user with google servers and returns a user-id
     @param token: the token from the request
     @returns user_id: the user_id to be used in the db
