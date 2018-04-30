@@ -5,13 +5,14 @@ from meal import food_to_meal
 
 from os import sys
 from database import db_session
-from flask import Flask, request
+from flask import Flask, request, session
 from flask_cors import CORS
 from models import Food, Meal
 
 import auth
 
 app = Flask(__name__)
+app.secret_key = 'test'
 CORS(app)
 
 # Endpoint to save new food
@@ -73,6 +74,12 @@ def get_foods():
     if request.method == 'POST':
         try:
             app.logger.info('getfood request')
+            token = request.get_json()['token']
+            if token in session:
+                user_id = session[token]
+            else:
+                return "Please sign in"
+
             foods = db_session.query(Food).all()
             foods = json.dumps([i.name for i in foods])
             app.logger.info(foods)
@@ -90,7 +97,7 @@ def login():
         try:
             app.logger.info('login attempt')
             data = request.get_json()
-            app.logger.info('user id: ' + auth.login(data['token']))
+            auth.login(data['token'])
 
         except Exception as ex:
             app.logger.info(ex)
