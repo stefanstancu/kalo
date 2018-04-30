@@ -6,6 +6,8 @@ WORKDIR /var/www/app
 
 RUN apk --update add linux-headers musl-dev gcc postgresql-dev
 
+RUN pip3 install --upgrade pip
+
 RUN pip3 install -r requirements.txt
 
 EXPOSE 5000

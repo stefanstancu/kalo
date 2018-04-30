@@ -12,6 +12,7 @@ services:
         environment:
             FLASK_APP: /var/www/app/src/main.py
             FLASK_DEBUG: 1
+            CLIENT_ID: 1012179851696-fkknaicl6dg4g7cplk005v5desvddovj.apps.googleusercontent.com
         volumes:
             - ./app:/var/www/app
         ports:
