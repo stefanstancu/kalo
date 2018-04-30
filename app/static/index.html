@@ -40,9 +40,11 @@
         <div class="u-full-width">
             <h1 style="text-align:center">KALO</h1>
             <hr>
-            <div class="g-signin2" data-onsuccess="onSignIn"></div>
+            <button v-show="loggedIn" @click="signOut" class="button">Sign Out</button>
+			<div v-show="loggedIn == false" class="g-signin2" data-onsuccess="onSignIn"></div>
         </div>
     </div>
+    <div v-show="loggedIn">
     <h2>Today</h2>
     <div class="row">
         <table class="u-full-width">
@@ -147,15 +149,27 @@
             <p v-show="saveResponse != 0"> {{saveResponse}}</p>
         </div>
     </div>
+    </div>
     <script>
         function onSignIn(googleUser){
             var id_token = googleUser.getAuthResponse().id_token;
             Cookies.set('kalo_id', id_token);
+            app.loggedIn = true;
             axios.post('http://localhost:5000/api/login', {
                     profile: googleUser.getBasicProfile(),
                     token: id_token
             });
         }
+        
+		function onSignOut() {
+			var auth2 = gapi.auth2.getAuthInstance();
+			auth2.signOut().then(function () {
+				console.log('User signed out.');
+				app.loggedIn = false;
+				Cookies.remove('kalo_id');
+			});
+		}
+
         var app = new Vue({
             el: '#app',
             data: {
@@ -170,9 +184,10 @@
                 },
                 meal: {name:"", date:"", items: [{name:"", amount:0}]},
                 meals: [],
-                foods: ["Chicken1", "test"],
+                foods: [],
                 saveResponse: 0,
-                saveMealResponse:0
+                saveMealResponse:0,
+                loggedIn: false
             },
             methods: {
                 sendFood: function () {
@@ -202,24 +217,33 @@
                 },
                 removeItem: function (index) {
                     this.meal.items.splice(index, 1);
-                }
+                },
+				signIn: function (){
+					onSignIn();
+				},
+				signOut: function (){
+					onSignOut();
+				}
             },
             mounted() {
                 var token = Cookies.get('kalo_id');
+                if(token){
+                    this.loggedIn = true;
+                }
                 axios.post('http://localhost:5000/api/getmeals',{'token': token}
                     ).then(response => {
                         this.meals = response.data;
                     }).catch(error => {
                         console.log(error);
                     });
-            axios.post('http://localhost:5000/api/getfoods', {'token': token}
+				axios.post('http://localhost:5000/api/getfoods', {'token': token}
                     ).then(response => {
                         this.foods = response.data;
                     }).catch(error => {
                         console.log(error);
                     });
             }
-        })
+        });
     </script>
 </div>
 
