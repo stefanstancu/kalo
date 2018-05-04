@@ -39,15 +39,34 @@
     <div class="row">
         <div class="u-full-width">
             <h1 style="text-align:center">KALO</h1>
-            <hr>
-            <button v-show="loggedIn" @click="signOut" class="button">Sign Out</button>
-			<div v-show="loggedIn == false" class="g-signin2" data-onsuccess="onSignIn"></div>
         </div>
     </div>
-    <div v-show="loggedIn">
-    <h2>Today</h2>
+    <hr>
     <div class="row">
-        <table class="u-full-width">
+        <div class="five columns">&nbsp;</div>
+        <div class="four columns">
+            <h4 style="text-align:center">{{user_name}}</h4>
+        </div>
+        <div class="three columns">
+            <div class="u-pull-right">
+                <button v-show="loggedIn" @click="signOut" class="button">Sign Out</button>
+                <div v-show="loggedIn == false" class="g-signin2" data-onsuccess="onSignIn"></div>
+            </div>
+        </div>
+        <hr>
+    </div>
+    <div v-show="loggedIn">
+    <div class="row">
+        <div class="three columns">
+            <h2 style="margin:0px">Today</h2>
+        </div>
+        <div class="nine columns">
+            <button style="margin-top:10px" @click="toggle_today" v-if="show_table">Hide</button>
+            <button style="margin-top:10px" @click="toggle_today" v-else>Show</button>
+        </div>
+    </div>
+    <div class="row">
+        <table v-show="show_table" class="u-full-width">
         <thead>
             <tr>
                 <th></th>
@@ -154,6 +173,8 @@
         function onSignIn(googleUser){
             var id_token = googleUser.getAuthResponse().id_token;
             app.loggedIn = true;
+            var user_profile = googleUser.getBasicProfile();
+            app.user_name = googleUser.getBasicProfile().getName();
             axios.post('http://localhost:5000/api/login', {
                     profile: googleUser.getBasicProfile(),
                     token: id_token
@@ -191,11 +212,16 @@
                 meal: {name:"", date:"", items: [{name:"", amount:0}]},
                 meals: [],
                 foods: [],
+                user_name: "",
                 saveResponse: 0,
                 saveMealResponse:0,
+                show_table: true,
                 loggedIn: false
             },
             methods: {
+                toggle_today: function () {
+                    this.show_table = !this.show_table;
+                },
                 sendFood: function () {
                     saveResponse = "loading...";
                     axios.post('http://localhost:5000/api/savefood', this.food, {withCredentials: true}
