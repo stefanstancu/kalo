@@ -195,6 +195,9 @@
             }).catch(error => {
                 console.log(error);
             });
+            analytics.track('Sign In', {
+                type: 'Google'
+            });
         }
         
 		function onSignOut() {
@@ -204,6 +207,9 @@
 				app.loggedIn = false;
 				Cookies.remove('session');
 			});
+            analytics.track('Sign Out', {
+                type: 'Google'
+            });
 		}
 
         var app = new Vue({
