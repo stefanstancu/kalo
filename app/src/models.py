@@ -37,6 +37,18 @@ class Food(Base):
                 self.protein,
                 self.price
                 )
+    @property
+    def serialize(self):
+        """Return a dict of the object for returning to front-end"""
+        return {
+                'name': self.name,
+                'measure': self.measure,
+                'calories': self.calories,
+                'carbohydrates': self.carbohydrates,
+                'fat': self.fat,
+                'protein': self.protein,
+                'price': self.price
+                }
 
     def __name__(self):
         return self.name

@@ -32,6 +32,15 @@
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
+    <! -- Segment Analytics
+    __________________________________________________ -->
+    <script>
+  !function(){var analytics=window.analytics=window.analytics||[];if(!analytics.initialize)if(analytics.invoked)window.console&&console.error&&console.error("Segment snippet included twice.");else{analytics.invoked=!0;analytics.methods=["trackSubmit","trackClick","trackLink","trackForm","pageview","identify","reset","group","track","ready","alias","debug","page","once","off","on"];analytics.factory=function(t){return function(){var e=Array.prototype.slice.call(arguments);e.unshift(t);analytics.push(e);return analytics}};for(var t=0;t<analytics.methods.length;t++){var e=analytics.methods[t];analytics[e]=analytics.factory(e)}analytics.load=function(t,e){var n=document.createElement("script");n.type="text/javascript";n.async=!0;n.src=("https:"===document.location.protocol?"https://":"http://")+"cdn.segment.com/analytics.js/v1/"+t+"/analytics.min.js";var o=document.getElementsByTagName("script")[0];o.parentNode.insertBefore(n,o);analytics._loadOptions=e};analytics.SNIPPET_VERSION="4.1.0";
+  analytics.load("vBtCQ3ZA6EPOfm3SLsXhhKMbQBE3U3Gh");
+  analytics.page();
+  }}();
+</script>
+
 </head>
 <body>
 
@@ -39,39 +48,66 @@
     <div class="row">
         <div class="u-full-width">
             <h1 style="text-align:center">KALO</h1>
-            <hr>
-            <button v-show="loggedIn" @click="signOut" class="button">Sign Out</button>
-			<div v-show="loggedIn == false" class="g-signin2" data-onsuccess="onSignIn"></div>
         </div>
     </div>
-    <div v-show="loggedIn">
-    <h2>Today</h2>
+    <hr>
     <div class="row">
-        <table class="u-full-width">
+        <div class="five columns">&nbsp;</div>
+        <div class="four columns">
+            <h4 style="text-align:center">{{user_name.split(" ")[0]}}</h4>
+        </div>
+        <div class="three columns">
+            <div class="u-pull-right">
+                <button v-show="loggedIn" @click="signOut" class="button">Sign Out</button>
+                <div v-show="loggedIn == false" class="g-signin2" data-onsuccess="onSignIn"></div>
+            </div>
+        </div>
+        <hr>
+    </div>
+    <div v-show="loggedIn">
+    <div class="row">
+        <div class="three columns">
+            <h2 style="margin:0px">Today</h2>
+        </div>
+        <div class="nine columns">
+            <button style="margin-top:10px" @click="toggle_today" v-if="show_table">Hide</button>
+            <button style="margin-top:10px" @click="toggle_today" v-else>Show</button>
+        </div>
+    </div>
+    <div class="row">
+        <table v-show="show_table" class="u-full-width">
         <thead>
             <tr>
                 <th></th>
                 <th v-for="meal in meals">
-                    {{meal.name}}
+                    <div style="position: relative;">
+                        <a v-show="false" href="#" style="position: absolute; right: 5px;" @click="">x</a>
+                        <div style="padding-top: 15px;">{{meal.name}}</div>
+                    </div>
                 </th>
+                <th>Total</th>
             </tr>
         </thead>
         <tbody>
             <tr>
                 <th>Calories</th>
                 <th v-for="meal in meals">{{meal.calories}}</th>
+                <th> {{totals.calories}} </th>
             </tr>
             <tr>
                 <th>Carbohydrates</th>
                 <th v-for="meal in meals">{{meal.carbohydrates}}</th>
+                <th> {{totals.carbohydrates}} </th>
             </tr>
             <tr>
                 <th>Fat</th>
                 <th v-for="meal in meals">{{meal.fat}}</th>
+                <th> {{totals.fat}} </th>
             </tr>
             <tr>
                 <th>Protein</th>
                 <th v-for="meal in meals">{{meal.protein}}</th>
+                <th> {{totals.protein}} </th>
             </tr>
         </tbody>
         </table>
@@ -95,10 +131,12 @@
                 <div class="row" v-for="(item, index) in meal.items">
                         <input class="six columns" type="text" list="item_name" v-model="item.name"/>
                         <input class="three columns" type="number" v-model="item.amount"/>
-                        <button @click="removeItem(index)" class="button three columns" type="button">x</button>
+                        <div class="two columns">
+                            <button @click="removeItem(index)" class="button" type="button">x</button>
+                        </div>
                 </div>
                 <datalist id="item_name">
-                    <option v-for="food in foods">{{food}}</option>
+                    <option v-for="food in foods">{{food.name}}</option>
                 </datalist>
                 <div class="row">
                     <button @click="addItem" type="button" class="button u-full-width"><p style="font-size:4em">+</p></button>
@@ -110,50 +148,76 @@
             <p v-show="saveMealResponse != 0">{{saveMealResponse}}</p>
         </div>
         <div class="six columns">
-            <h4>Food Item</h4>
-            <form>
-                <div class="row">
-                        <label for="name_input">Name</label>
-                        <input class="u-full-width" id="name_input" type="text" v-model="food.name"/>
+            <h4>Saved Food <span style="font-size: 0.6em">(/100g)</span></h4>
+            <div>
+                <div class="row"><b>
+                    <div class="four columns"> Name </div>
+                    <div class="two columns"> Cal </div>
+                    <div class="two columns"> Car </div>
+                    <div class="two columns"> Fat </div>
+                    <div class="two columns"> Pro </div>
+                    </b>
                 </div>
-                <div class="row">
-                    <div class="eight columns">
-                        <label for="measure_input">Serving size</label>
-                        <input class="u-full-width" id="measure_input" type="number" v-model="food.measure"/>
-                    </div>
-                    <div class="four columns">
-                        <label for="unit_input">Unit </label>
-                        <select class="u-full-width" id="unit_input" v-model="food.unit">
-                            <option value="g">g</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="six columns">
-                        <label style="padding-bottom: 7px; padding-top: 7px; margin-bottom: 15px; border: 1px;" for="calories_input">Calories</label>
-                        <label style="padding-bottom: 7px; padding-top: 7px; margin-bottom: 15px; border: 1px;" for="carbs_input">Carbohydrates</label>
-                        <label style="padding-bottom: 7px; padding-top: 7px; margin-bottom: 15px; border: 1px;" for="fats_input">Fats</label>
-                        <label style="padding-bottom: 7px; padding-top: 7px; margin-bottom: 15px; border: 1px;" for="protein_input">Protein</label>
-                    </div>
-                    <div class="six columns">
-                        <input class="u-full-width" id="calories_input" type="number" v-model="food.calories"/>
-                        <input class="u-full-width" id="carbs_input" type="number" v-model="food.carbohydrates"/>
-                        <input class="u-full-width" id="fats_input" type="number" v-model="food.fat"/>
-                        <input class="u-full-width" id="protein_input" type="number" v-model="food.protein"/>
+                <div style="overflow: auto; height: 200px;">
+                    <div v-for="food in foods" class="row">
+                        <div class="four columns"> {{food.name}} </div>
+                        <div class="two columns"> {{Math.round(food.calories/food.measure*100)}} </div>
+                        <div class="two columns"> {{Math.round(food.carbohydrates/food.measure*100)}} </div>
+                        <div class="two columns"> {{Math.round(food.fat/food.measure*100)}} </div>
+                        <div class="two columns"> {{Math.round(food.protein/food.measure*100)}} </div>
                     </div>
                 </div>
-                <div class="row">
-                        <button @click="sendFood" type="button" class="button u-full-width">SAVE</button>
-                </div>
-            </form>
+            </div>
+                <hr>
+                <button @click="toggle_save_food" v-show="!show_save_food" class="button u-full-width" type="button"><p style="font-size: 4em">+</p></button>
+            <div v-show="show_save_food">
+                <h4>Food Item</h4>
+                <form>
+                    <div class="row">
+                            <label for="name_input">Name</label>
+                            <input class="u-full-width" id="name_input" type="text" v-model="food.name"/>
+                    </div>
+                    <div class="row">
+                        <div class="eight columns">
+                            <label for="measure_input">Serving size</label>
+                            <input class="u-full-width" id="measure_input" type="number" v-model="food.measure"/>
+                        </div>
+                        <div class="four columns">
+                            <label for="unit_input">Unit </label>
+                            <select class="u-full-width" id="unit_input" v-model="food.unit">
+                                <option value="g">g</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="six columns">
+                            <label style="padding-bottom: 7px; padding-top: 7px; margin-bottom: 15px; border: 1px;" for="calories_input">Calories</label>
+                            <label style="padding-bottom: 7px; padding-top: 7px; margin-bottom: 15px; border: 1px;" for="carbs_input">Carbohydrates</label>
+                            <label style="padding-bottom: 7px; padding-top: 7px; margin-bottom: 15px; border: 1px;" for="fats_input">Fats</label>
+                            <label style="padding-bottom: 7px; padding-top: 7px; margin-bottom: 15px; border: 1px;" for="protein_input">Protein</label>
+                        </div>
+                        <div class="six columns">
+                            <input class="u-full-width" id="calories_input" type="number" v-model="food.calories"/>
+                            <input class="u-full-width" id="carbs_input" type="number" v-model="food.carbohydrates"/>
+                            <input class="u-full-width" id="fats_input" type="number" v-model="food.fat"/>
+                            <input class="u-full-width" id="protein_input" type="number" v-model="food.protein"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                            <button @click="sendFood" type="button" class="button six columns">SAVE</button>
+                            <button @click="toggle_save_food" type="button" class="button six columns">CANCEL</button>
+                    </div>
+                </form>
+            </div>
             <p v-show="saveResponse != 0"> {{saveResponse}}</p>
         </div>
-    </div>
     </div>
     <script>
         function onSignIn(googleUser){
             var id_token = googleUser.getAuthResponse().id_token;
             app.loggedIn = true;
+            var user_profile = googleUser.getBasicProfile();
+            app.user_name = googleUser.getBasicProfile().getName();
             axios.post('http://localhost:5000/api/login', {
                     profile: googleUser.getBasicProfile(),
                     token: id_token
@@ -165,6 +229,9 @@
             }).catch(error => {
                 console.log(error);
             });
+            analytics.track('Sign In', {
+                type: 'Google'
+            });
         }
         
 		function onSignOut() {
@@ -174,6 +241,9 @@
 				app.loggedIn = false;
 				Cookies.remove('session');
 			});
+            analytics.track('Sign Out', {
+                type: 'Google'
+            });
 		}
 
         var app = new Vue({
@@ -191,16 +261,27 @@
                 meal: {name:"", date:"", items: [{name:"", amount:0}]},
                 meals: [],
                 foods: [],
+                user_name: "",
                 saveResponse: 0,
                 saveMealResponse:0,
+                show_table: true,
+                show_save_food: false,
                 loggedIn: false
             },
             methods: {
+                toggle_today: function () {
+                    this.show_table = !this.show_table;
+                },
+                toggle_save_food: function () {
+                    this.show_save_food = !this.show_save_food;
+                },
                 sendFood: function () {
                     saveResponse = "loading...";
                     axios.post('http://localhost:5000/api/savefood', this.food, {withCredentials: true}
                     ).then(response => {
                         this.saveResponse = response.data;
+                        this.getFoods();
+                        this.toggle_save_food();
                     }).catch(error => {
                         console.log(error);
                     });
@@ -210,6 +291,7 @@
                     axios.post('http://localhost:5000/api/savemeal', this.meal, {withCredentials: true}
                     ).then(response => {
                         this.saveMealResponse = response.data;
+                        this.getMeals();
                     }).catch(error => {
                         console.log(error);
                     });
@@ -245,6 +327,28 @@
                         }).catch(error => {
                             console.log(error);
                         });
+                }
+            },
+            computed: {
+                totals: function () {
+                    let totals = {
+                        calories: [],
+                        carbohydrates: [],
+                        protein: [],
+                        fat: []
+                    };
+
+                    Object.entries(this.meals).forEach(([key, value])=> {
+                        totals.calories.push(value.calories);
+                        totals.carbohydrates.push(value.carbohydrates);
+                        totals.protein.push(value.protein);
+                        totals.fat.push(value.fat);
+                    });
+                    totals.calories = totals.calories.reduce(function(total, num){ return total + num }, 0);
+                    totals.carbohydrates = totals.carbohydrates.reduce(function(total, num){ return total + num }, 0);
+                    totals.fat = totals.fat.reduce(function(total, num){ return total + num }, 0);
+                    totals.protein = totals.protein.reduce(function(total, num){ return total + num }, 0);
+                    return totals;
                 }
             },
             mounted() {
