@@ -108,7 +108,7 @@ def get_foods():
                 return "Please sign in"
 
             foods = db_session.query(Food).filter(Food.user_id == user_id).all()
-            foods = json.dumps([i.name for i in foods])
+            foods = json.dumps([i.serialize for i in foods])
             app.logger.info(foods)
         except Exception as ex:
             app.logger.error(ex)

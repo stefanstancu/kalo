@@ -136,7 +136,7 @@
                         </div>
                 </div>
                 <datalist id="item_name">
-                    <option v-for="food in foods">{{food}}</option>
+                    <option v-for="food in foods">{{food.name}}</option>
                 </datalist>
                 <div class="row">
                     <button @click="addItem" type="button" class="button u-full-width"><p style="font-size:4em">+</p></button>
@@ -148,7 +148,7 @@
             <p v-show="saveMealResponse != 0">{{saveMealResponse}}</p>
         </div>
         <div class="six columns">
-            <h4>Saved Food</h4>
+            <h4>Saved Food <span style="font-size: 0.6em">(/100g)</span></h4>
             <div>
                 <div class="row"><b>
                     <div class="four columns"> Name </div>
@@ -158,16 +158,18 @@
                     <div class="two columns"> Pro </div>
                     </b>
                 </div>
-                <div v-for="food in foods" class="row">
-                    <div class="four columns"> {{food}} </div>
-                    <div class="two columns"> 1 </div>
-                    <div class="two columns"> 2 </div>
-                    <div class="two columns"> 3 </div>
-                    <div class="two columns"> 4 </div>
+                <div style="overflow: auto; height: 200px;">
+                    <div v-for="food in foods" class="row">
+                        <div class="four columns"> {{food.name}} </div>
+                        <div class="two columns"> {{Math.round(food.calories/food.measure*100)}} </div>
+                        <div class="two columns"> {{Math.round(food.carbohydrates/food.measure*100)}} </div>
+                        <div class="two columns"> {{Math.round(food.fat/food.measure*100)}} </div>
+                        <div class="two columns"> {{Math.round(food.protein/food.measure*100)}} </div>
+                    </div>
                 </div>
+            </div>
                 <hr>
                 <button @click="toggle_save_food" v-show="!show_save_food" class="button u-full-width" type="button"><p style="font-size: 4em">+</p></button>
-            </div>
             <div v-show="show_save_food">
                 <h4>Food Item</h4>
                 <form>
