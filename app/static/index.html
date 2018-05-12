@@ -331,7 +331,7 @@
                     });
                 },
                 removeMeal: function (index) {
-                    axios.post('http://localhost:5000/api/deletemeal', this.meals[index].id, {withCredentials: true}
+                    axios.post('http://localhost:5000/api/deletemeal', {id: this.meals[index].id}, {withCredentials: true}
                     ).then(reposonse => {
                         this.getMeals();
                     }).catch(error => {
@@ -339,7 +339,7 @@
                     });
                 },
                 removeFood: function (index) {
-                    axios.post('http://localhost:5000/api/deletefood', this.foods[index].id, {withCredentials: true}
+                    axios.post('http://localhost:5000/api/deletefood', {id: this.foods[index].id}, {withCredentials: true}
                     ).then(reposonse => {
                         this.getFoods();
                     }).catch(error => {
