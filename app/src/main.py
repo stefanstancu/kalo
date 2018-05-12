@@ -55,7 +55,9 @@ def delete_food():
                 app.logger.debug("delete food request")
                 app.logger.debug(data)
 
-                db_session.query(Food).filter(Food.user_id == user_id and Food.id == data).delete()
+                db_session.query(Food).filter(Food.user_id == user_id). \
+                filter(Food.id == data['id']). \
+                delete()
                 db_session.commit()
             except Exception as ex:
                 app.logger.error(ex)
@@ -104,9 +106,11 @@ def delete_meal():
                     return "Please sign in"
 
                 app.logger.debug("delete meal request")
-                app.logger.debug(data)
+                app.logger.debug(str(data))
 
-                db_session.query(Meal).filter(Meal.user_id == user_id and Meal.id == data).delete()
+                db_session.query(Meal).filter(Meal.user_id == user_id ). \
+                filter(Meal.id == data['id']). \
+                delete()
                 db_session.commit()
             except Exception as ex:
                 app.logger.error(ex)
