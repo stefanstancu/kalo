@@ -40,7 +40,10 @@
   analytics.page();
   }}();
 </script>
-
+<style>
+    th { text-align: right; }
+    th.align_left { text-align: left; }
+</style>
 </head>
 <body>
 
@@ -53,11 +56,11 @@
     <hr>
     <div class="row">
         <div class="five columns">&nbsp;</div>
-        <div class="four columns">
-            <h4 style="text-align:center">{{user_name.split(" ")[0]}}</h4>
+        <div class="five columns">
+            <h4 style="text-align:right">{{user_name}}</h4>
         </div>
-        <div class="three columns">
-            <div class="u-pull-right">
+        <div class="two columns">
+            <div class="u-pull-left">
                 <button v-show="loggedIn" @click="signOut" class="button">Sign Out</button>
                 <div v-show="loggedIn == false" class="g-signin2" data-onsuccess="onSignIn"></div>
             </div>
@@ -78,10 +81,10 @@
         <table v-show="show_table" class="u-full-width">
         <thead>
             <tr>
-                <th></th>
-                <th v-for="meal in meals">
-                    <div style="position: relative;">
-                        <a v-show="false" href="#" style="position: absolute; right: 5px;" @click="">x</a>
+                <th class="align_left"></th>
+                <th v-for="(meal, index) in meals">
+                    <div @mouseover="mealMenuShow = index" @mouseleave="mealMenuShow = -1" style="position: relative;">
+                        <a href="#" v-show="mealMenuShow == index" style="text-decoration: none; position: absolute; right: 5px;" @click="removeMeal(index)">x</a>
                         <div style="padding-top: 15px;">{{meal.name}}</div>
                     </div>
                 </th>
@@ -90,22 +93,22 @@
         </thead>
         <tbody>
             <tr>
-                <th>Calories</th>
+                <th class="align_left">Calories</th>
                 <th v-for="meal in meals">{{meal.calories}}</th>
                 <th> {{totals.calories}} </th>
             </tr>
             <tr>
-                <th>Carbohydrates</th>
+                <th class="align_left">Carbohydrates</th>
                 <th v-for="meal in meals">{{meal.carbohydrates}}</th>
                 <th> {{totals.carbohydrates}} </th>
             </tr>
             <tr>
-                <th>Fat</th>
+                <th class="align_left">Fat</th>
                 <th v-for="meal in meals">{{meal.fat}}</th>
                 <th> {{totals.fat}} </th>
             </tr>
             <tr>
-                <th>Protein</th>
+                <th class="align_left">Protein</th>
                 <th v-for="meal in meals">{{meal.protein}}</th>
                 <th> {{totals.protein}} </th>
             </tr>
@@ -121,7 +124,7 @@
                     <label class="six columns">Date</label>   
                 </div>
                 <div class="row">
-                    <input class="six columns" type="text" name="Mean Name" v-model="meal.name"/>
+                    <input class="six columns" type="text" name="Meal Name" placeholder="New Meal" v-model="meal.name"/>
                     <input class="six columns" type="date" v-model="meal.date"/>
                 </div>
                 <div class="row">
@@ -131,9 +134,7 @@
                 <div class="row" v-for="(item, index) in meal.items">
                         <input class="six columns" type="text" list="item_name" v-model="item.name"/>
                         <input class="three columns" type="number" v-model="item.amount"/>
-                        <div class="two columns">
-                            <button @click="removeItem(index)" class="button" type="button">x</button>
-                        </div>
+                            <button @click="removeItem(index)" class="button u-pull-right" type="button">x</button>
                 </div>
                 <datalist id="item_name">
                     <option v-for="food in foods">{{food.name}}</option>
@@ -145,31 +146,18 @@
                     <button @click="saveMeal" type="button" class="button u-full-width">SAVE</button>
                 </div>
             </form>
+            <div v-show="mealErrors.length > 0">
+                Whoops! We've found some errors in your meal.
+                <hr>
+                <ul>
+                    <li v-for="error in mealErrors">
+                        {{error}}
+                    </li>
+                </ul>
+            </div>
             <p v-show="saveMealResponse != 0">{{saveMealResponse}}</p>
         </div>
         <div class="six columns">
-            <h4>Saved Food <span style="font-size: 0.6em">(/100g)</span></h4>
-            <div>
-                <div class="row"><b>
-                    <div class="four columns"> Name </div>
-                    <div class="two columns"> Cal </div>
-                    <div class="two columns"> Car </div>
-                    <div class="two columns"> Fat </div>
-                    <div class="two columns"> Pro </div>
-                    </b>
-                </div>
-                <div style="overflow: auto; height: 200px;">
-                    <div v-for="food in foods" class="row">
-                        <div class="four columns"> {{food.name}} </div>
-                        <div class="two columns"> {{Math.round(food.calories/food.measure*100)}} </div>
-                        <div class="two columns"> {{Math.round(food.carbohydrates/food.measure*100)}} </div>
-                        <div class="two columns"> {{Math.round(food.fat/food.measure*100)}} </div>
-                        <div class="two columns"> {{Math.round(food.protein/food.measure*100)}} </div>
-                    </div>
-                </div>
-            </div>
-                <hr>
-                <button @click="toggle_save_food" v-show="!show_save_food" class="button u-full-width" type="button"><p style="font-size: 4em">+</p></button>
             <div v-show="show_save_food">
                 <h4>Food Item</h4>
                 <form>
@@ -204,12 +192,51 @@
                         </div>
                     </div>
                     <div class="row">
-                            <button @click="sendFood" type="button" class="button six columns">SAVE</button>
-                            <button @click="toggle_save_food" type="button" class="button six columns">CANCEL</button>
+                            <button @click="sendFood" type="button" class="button">SAVE</button>
                     </div>
                 </form>
             </div>
+            <div v-show="foodErrors.length > 0">
+                Darn! We've found some errors in your food item.
+                <hr>
+                <ul>
+                    <li v-for="error in foodErrors">
+                        {{error}}
+                    </li>
+                </ul>
+            </div>
             <p v-show="saveResponse != 0"> {{saveResponse}}</p>
+            <h4>Saved Food <span style="font-size: 0.6em">(/100g)</span>
+                <div class="u-pull-right">
+                    <button @click="toggle_save_food" class="button" type="button">{{show_save_food?"CANCEL":"ADD"}}</button>
+                </div>
+            </h4>
+            <div>
+                <div class="row"><b>
+                    <div class="three columns"> Name </div>
+                    <div class="two columns"> Cal </div>
+                    <div class="two columns"> Car </div>
+                    <div class="two columns"> Fat </div>
+                    <div class="two columns"> Pro </div>
+                    <div class="one column"> &nbsp </div>
+                    </b>
+                </div>
+                <div style="overflow: auto; height: 200px;">
+                    <div v-for="(food, index) in foods">
+                        <div class="row" @mouseover="showRemoveFood = index" @mouseleave="showRemoveFood = -1">  
+                            <div class="three columns"> {{food.name}} </div>
+                            <div class="two columns"> {{Math.round(food.calories/food.measure*100)}} </div>
+                            <div class="two columns"> {{Math.round(food.carbohydrates/food.measure*100)}} </div>
+                            <div class="two columns"> {{Math.round(food.fat/food.measure*100)}} </div>
+                            <div class="two columns"> {{Math.round(food.protein/food.measure*100)}} </div>
+                            <a href="#" @click="removeFood(index)" v-show="showRemoveFood == index" class="one column" style="text-decoration: none;">x</a>
+                        </div>
+                    </div>
+                    <div style="text-align:center; padding: 5%" v-show="foods.length == 0">
+                        Start by adding some food items. <br> Then you can make track meals composed of your food!
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <script>
@@ -266,6 +293,10 @@
                 saveMealResponse:0,
                 show_table: true,
                 show_save_food: false,
+                mealMenuShow: -1,
+                showRemoveFood: -1,
+                mealErrors: [],
+                foodErrors: [],
                 loggedIn: false
             },
             methods: {
@@ -276,6 +307,7 @@
                     this.show_save_food = !this.show_save_food;
                 },
                 sendFood: function () {
+                    if (!this.validateFood()){ return; }
                     saveResponse = "loading...";
                     axios.post('http://localhost:5000/api/savefood', this.food, {withCredentials: true}
                     ).then(response => {
@@ -286,15 +318,87 @@
                         console.log(error);
                     });
                 },
-                saveMeal: function (){
+                saveMeal: function () {
+                    if (!this.validateMeal()){ return; }
                     saveMealResp = "adding...";
                     axios.post('http://localhost:5000/api/savemeal', this.meal, {withCredentials: true}
                     ).then(response => {
                         this.saveMealResponse = response.data;
                         this.getMeals();
+                        this.clearMeal();
                     }).catch(error => {
                         console.log(error);
                     });
+                },
+                removeMeal: function (index) {
+                    axios.post('http://localhost:5000/api/deletemeal', this.meals[index].id, {withCredentials: true}
+                    ).then(reposonse => {
+                        this.getMeals();
+                    }).catch(error => {
+                        console.log(error);
+                    });
+                },
+                removeFood: function (index) {
+                    axios.post('http://localhost:5000/api/deletefood', this.foods[index].id, {withCredentials: true}
+                    ).then(reposonse => {
+                        this.getFoods();
+                    }).catch(error => {
+                        console.log(error);
+                    });
+                },
+                validateMeal: function (){
+                    // Needs non-zero amount
+                    var food_names = [];
+                    for (food in this.foods) {
+                        food_names.push(this.foods[food].name);
+                    }
+                    var errors = [];
+                    for (food in this.meal.items){
+                        if (!(food_names.includes(this.meal.items[food].name))){
+                            if (this.meal.items[food].name == ""){
+                                errors.push("Blank");
+                            }
+                            else {
+                                errors.push(this.meal.items[food].name);
+                            }
+                        }
+                    }
+                    if (errors.length == 1){
+                        errors[0] = errors[0] + " is not a saved food";
+                    }
+                    else if (errors.length > 1) {
+                        errors[0] = errors.reduce((total, next) => total + ", " + next);
+                        errors = [errors[0] + " are not saved foods"];
+                    }
+                    if (this.meal.length < 0){
+                        errors.push("You need at least 1 food item for a meal");
+                    }
+                    for (food in this.meal.items){
+                        if (this.meal.items[food].amount == 0){
+                            errors.push("You need to have a non-zero food amount");
+                            break;
+                        }
+                    }
+                    if (this.meal.name == "") {
+                        errors.push("You need to give your meal a name");
+                    }
+                    this.mealErrors = errors;
+                    return (errors.length == 0);
+                },
+                validateFood: function (){
+                    // Needs all fields to be populated
+                    var errors = [];
+                    if (this.food.name == "") {
+                        errors.push("Food name cannot be blank");
+                    }
+                    if (this.food.measure == "" || this.food.unit == "") {
+                        errors.push("Measure cannot be blank");
+                    }
+                    if (this.food.calories == "" || this.food.carbohydrates == "" || this.food.fat == "" || this.food.protein == ""){
+                        errors.push("Missing attribute value");
+                    }
+                    this.foodErrors = errors;
+                    return (errors.length == 0);
                 },
                 addItem: function() {
                     var elem = document.createElement('div');
@@ -305,6 +409,9 @@
                 },
                 removeItem: function (index) {
                     this.meal.items.splice(index, 1);
+                },
+                clearMeal: function () {
+                    this.meal = {name:"", date:"", items: [{name:"", amount:0}]};
                 },
 				signIn: function (){
 					onSignIn();

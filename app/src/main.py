@@ -40,6 +40,30 @@ def save_food():
     else:
         return '-'
 
+# Endpoint to delete new meal
+@app.route('/api/deletefood', methods=['GET', 'POST', 'OPTIONS'])
+def delete_food():
+        if request.method == 'POST':
+            try:
+                data = request.get_json()
+                if 'token' in session:
+                    token = session['token']
+                    user_id = auth.validate_user(token)
+                else:
+                    return "Please sign in"
+
+                app.logger.debug("delete food request")
+                app.logger.debug(data)
+
+                db_session.query(Food).filter(Food.user_id == user_id and Food.id == data).delete()
+                db_session.commit()
+            except Exception as ex:
+                app.logger.error(ex)
+                return 'Error deleting food'
+            return 'Food Deleted'
+        else:
+            return '-'
+
 # Endpoint to save new meal
 @app.route('/api/savemeal', methods=['GET', 'POST', 'OPTIONS'])
 def save_meal():
@@ -64,6 +88,30 @@ def save_meal():
                 app.logger.error(ex)
                 return 'Error saving meal'
             return 'Meal Saved'
+        else:
+            return '-'
+
+# Endpoint to delete new meal
+@app.route('/api/deletemeal', methods=['GET', 'POST', 'OPTIONS'])
+def delete_meal():
+        if request.method == 'POST':
+            try:
+                data = request.get_json()
+                if 'token' in session:
+                    token = session['token']
+                    user_id = auth.validate_user(token)
+                else:
+                    return "Please sign in"
+
+                app.logger.debug("delete meal request")
+                app.logger.debug(data)
+
+                db_session.query(Meal).filter(Meal.user_id == user_id and Meal.id == data).delete()
+                db_session.commit()
+            except Exception as ex:
+                app.logger.error(ex)
+                return 'Error deleting meal'
+            return 'Meal Deleted'
         else:
             return '-'
 

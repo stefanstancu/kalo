@@ -41,6 +41,7 @@ class Food(Base):
     def serialize(self):
         """Return a dict of the object for returning to front-end"""
         return {
+                'id': self.id,
                 'name': self.name,
                 'measure': self.measure,
                 'calories': self.calories,
@@ -91,6 +92,7 @@ class Meal(Base):
     def serialize(self):
         """Return a dict of the object for returning to front-end"""
         return {
+                'id': self.id,
                 'name': self.name,
                 'date': str(self.date),
                 'calories': self.calories,
