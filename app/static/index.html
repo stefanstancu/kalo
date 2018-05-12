@@ -82,9 +82,9 @@
         <thead>
             <tr>
                 <th class="align_left"></th>
-                <th v-for="meal in meals">
-                    <div style="position: relative;">
-                        <a v-show="false" href="#" style="position: absolute; right: 5px;" @click="">x</a>
+                <th v-for="(meal, index) in meals">
+                    <div @mouseover="mealMenuShow = index" @mouseleave="mealMenuShow = -1" style="position: relative;">
+                        <a href="#" v-show="mealMenuShow == index" style="text-decoration: none; position: absolute; right: 5px;" @click="removeMeal(index)">x</a>
                         <div style="padding-top: 15px;">{{meal.name}}</div>
                     </div>
                 </th>
@@ -213,20 +213,24 @@
             </h4>
             <div>
                 <div class="row"><b>
-                    <div class="four columns"> Name </div>
+                    <div class="three columns"> Name </div>
                     <div class="two columns"> Cal </div>
                     <div class="two columns"> Car </div>
                     <div class="two columns"> Fat </div>
                     <div class="two columns"> Pro </div>
+                    <div class="one column"> &nbsp </div>
                     </b>
                 </div>
                 <div style="overflow: auto; height: 200px;">
-                    <div v-for="food in foods" class="row">
-                        <div class="four columns"> {{food.name}} </div>
-                        <div class="two columns"> {{Math.round(food.calories/food.measure*100)}} </div>
-                        <div class="two columns"> {{Math.round(food.carbohydrates/food.measure*100)}} </div>
-                        <div class="two columns"> {{Math.round(food.fat/food.measure*100)}} </div>
-                        <div class="two columns"> {{Math.round(food.protein/food.measure*100)}} </div>
+                    <div v-for="(food, index) in foods">
+                        <div class="row" @mouseover="showRemoveFood = index" @mouseleave="showRemoveFood = -1">  
+                            <div class="three columns"> {{food.name}} </div>
+                            <div class="two columns"> {{Math.round(food.calories/food.measure*100)}} </div>
+                            <div class="two columns"> {{Math.round(food.carbohydrates/food.measure*100)}} </div>
+                            <div class="two columns"> {{Math.round(food.fat/food.measure*100)}} </div>
+                            <div class="two columns"> {{Math.round(food.protein/food.measure*100)}} </div>
+                            <a href="#" @click="removeFood(index)" v-show="showRemoveFood == index" class="one column" style="text-decoration: none;">x</a>
+                        </div>
                     </div>
                     <div style="text-align:center; padding: 5%" v-show="foods.length == 0">
                         Start by adding some food items. <br> Then you can make track meals composed of your food!
@@ -289,6 +293,8 @@
                 saveMealResponse:0,
                 show_table: true,
                 show_save_food: false,
+                mealMenuShow: -1,
+                showRemoveFood: -1,
                 mealErrors: [],
                 foodErrors: [],
                 loggedIn: false
@@ -312,7 +318,7 @@
                         console.log(error);
                     });
                 },
-                saveMeal: function (){
+                saveMeal: function () {
                     if (!this.validateMeal()){ return; }
                     saveMealResp = "adding...";
                     axios.post('http://localhost:5000/api/savemeal', this.meal, {withCredentials: true}
@@ -320,6 +326,22 @@
                         this.saveMealResponse = response.data;
                         this.getMeals();
                         this.clearMeal();
+                    }).catch(error => {
+                        console.log(error);
+                    });
+                },
+                removeMeal: function (index) {
+                    axios.post('http://localhost:5000/api/deletemeal', this.meals[index].id, {withCredentials: true}
+                    ).then(reposonse => {
+                        this.getMeals();
+                    }).catch(error => {
+                        console.log(error);
+                    });
+                },
+                removeFood: function (index) {
+                    axios.post('http://localhost:5000/api/deletefood', this.foods[index].id, {withCredentials: true}
+                    ).then(reposonse => {
+                        this.getFoods();
                     }).catch(error => {
                         console.log(error);
                     });
