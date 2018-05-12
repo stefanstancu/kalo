@@ -56,11 +56,11 @@
     <hr>
     <div class="row">
         <div class="five columns">&nbsp;</div>
-        <div class="four columns">
-            <h4 style="text-align:center">{{user_name.split(" ")[0]}}</h4>
+        <div class="five columns">
+            <h4 style="text-align:right">{{user_name}}</h4>
         </div>
-        <div class="three columns">
-            <div class="u-pull-right">
+        <div class="two columns">
+            <div class="u-pull-left">
                 <button v-show="loggedIn" @click="signOut" class="button">Sign Out</button>
                 <div v-show="loggedIn == false" class="g-signin2" data-onsuccess="onSignIn"></div>
             </div>
