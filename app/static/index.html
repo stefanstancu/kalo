@@ -206,11 +206,41 @@
                 </ul>
             </div>
             <p v-show="saveResponse != 0"> {{saveResponse}}</p>
-            <h4>Saved Food <span style="font-size: 0.6em">(/100g)</span>
-                <div class="u-pull-right">
-                    <button @click="toggle_save_food" class="button" type="button">{{show_save_food?"CANCEL":"ADD"}}</button>
+            <div class="row">
+                <h4 class="six columns">Saved Food <span style="font-size: 0.6em">(/100g)</span></h4>
+                <div class="three columns">
+                    <button @click="toggle_save_food" class="button" type="button">{{show_save_food?"cancel":"custom"}}</button>
                 </div>
-            </h4>
+                <div class="three columns">
+                    <button @click="toggle_search_food" class="button" type="button">{{show_search_food?"cancel":"search"}}</button>
+                </div>
+            </div>
+            <div v-show="show_search_food">
+                <div class="row">
+                    <p> Data provided by the USDA Nutrition Database </p>
+                    <input v-model="food_query" class="u-full-width" id="food_query" type="text"/>
+                </div>
+                <div class="row"><b>
+                    <div class="seven columns" > Name </div>
+                    <div class="one columns"> Cal </div>
+                    <div class="one columns"> Car </div>
+                    <div class="one columns"> Fat </div>
+                    <div class="one columns"> Pro </div>
+                    <div class="one column"> &nbsp </div>
+                    </b>
+                </div>
+                <div v-for="(food, index) in search_results">
+                    <div class="row">
+                        <div class="seven columns" style="white-space: nowrap; text-overflow: ellipsis; overflow: hidden;"> {{food.name}} </div>
+                        <div class="one columns"> {{food.calories}} </div>
+                        <div class="one columns"> {{food.carbohydrates}} </div>
+                        <div class="one columns"> {{food.fat}} </div>
+                        <div class="one columns"> {{food.protein}} </div>
+                        <a href='#' @click="" v-show="" class="one column" style="text-decoration: none;">+</a>
+                    </div>
+                </div>
+                <hr>
+            </div>
             <div>
                 <div class="row"><b>
                     <div class="three columns"> Name </div>
@@ -288,16 +318,26 @@
                 meal: {name:"", date:"", items: [{name:"", amount:0}]},
                 meals: [],
                 foods: [],
+                search_results: [],
                 user_name: "",
                 saveResponse: 0,
                 saveMealResponse:0,
+                food_query: "",
+                food_query_timer_id: "",
                 show_table: true,
                 show_save_food: false,
+                show_search_food: false,
                 mealMenuShow: -1,
                 showRemoveFood: -1,
                 mealErrors: [],
                 foodErrors: [],
                 loggedIn: false
+            },
+            watch: {
+                food_query: function(new_value, old_value) {
+                    clearTimeout(this.food_query_timer_id);
+                    this.food_query_timer_id = setTimeout(function () {app.queryFood(new_value);}, 350);
+                }
             },
             methods: {
                 toggle_today: function () {
@@ -305,6 +345,9 @@
                 },
                 toggle_save_food: function () {
                     this.show_save_food = !this.show_save_food;
+                },
+                toggle_search_food: function () {
+                    this.show_search_food = !this.show_search_food;
                 },
                 sendFood: function () {
                     if (!this.validateFood()){ return; }
@@ -314,6 +357,15 @@
                         this.saveResponse = response.data;
                         this.getFoods();
                         this.toggle_save_food();
+                    }).catch(error => {
+                        console.log(error);
+                    });
+                },
+                queryFood: function (query) {
+                    if (query == "") { return; }
+                    axios.post('http://localhost:5000/api/querydb', {query:query}, {withCredentials: true}
+                    ).then(response => {
+                        this.search_results = response.data;
                     }).catch(error => {
                         console.log(error);
                     });
