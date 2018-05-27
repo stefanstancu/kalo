@@ -192,7 +192,7 @@
                         </div>
                     </div>
                     <div class="row">
-                            <button @click="sendFood" type="button" class="button">SAVE</button>
+                            <button @click="sendFood(food)" type="button" class="button">SAVE</button>
                     </div>
                 </form>
             </div>
@@ -230,35 +230,35 @@
                     </b>
                 </div>
                 <div v-for="(food, index) in search_results">
-                    <div class="row">
+                    <div class="row" @mouseover="showSaveFood = index" @mouseleave="showSaveFood = -1">
                         <div class="seven columns" style="white-space: nowrap; text-overflow: ellipsis; overflow: hidden;"> {{food.name}} </div>
                         <div class="one columns"> {{food.calories}} </div>
                         <div class="one columns"> {{food.carbohydrates}} </div>
                         <div class="one columns"> {{food.fat}} </div>
                         <div class="one columns"> {{food.protein}} </div>
-                        <a href='#' @click="" v-show="" class="one column" style="text-decoration: none;">+</a>
+                        <a href='#' @click="{food.measure = 100; food.unit = 'g'; sendFood(food); food_query = ''; show_search_food = false;}" v-show="showSaveFood == index" class="one column" style="text-decoration: none;">+</a>
                     </div>
                 </div>
                 <hr>
             </div>
             <div>
                 <div class="row"><b>
-                    <div class="three columns"> Name </div>
-                    <div class="two columns"> Cal </div>
-                    <div class="two columns"> Car </div>
-                    <div class="two columns"> Fat </div>
-                    <div class="two columns"> Pro </div>
+                    <div class="seven columns" > Name </div>
+                    <div class="one columns"> Cal </div>
+                    <div class="one columns"> Car </div>
+                    <div class="one columns"> Fat </div>
+                    <div class="one columns"> Pro </div>
                     <div class="one column"> &nbsp </div>
                     </b>
                 </div>
                 <div style="overflow: auto; height: 200px;">
                     <div v-for="(food, index) in foods">
                         <div class="row" @mouseover="showRemoveFood = index" @mouseleave="showRemoveFood = -1">  
-                            <div class="three columns"> {{food.name}} </div>
-                            <div class="two columns"> {{Math.round(food.calories/food.measure*100)}} </div>
-                            <div class="two columns"> {{Math.round(food.carbohydrates/food.measure*100)}} </div>
-                            <div class="two columns"> {{Math.round(food.fat/food.measure*100)}} </div>
-                            <div class="two columns"> {{Math.round(food.protein/food.measure*100)}} </div>
+                            <div class="seven columns"style="white-space: nowrap; text-overflow: ellipsis; overflow: hidden;"> {{food.name}} </div>
+                            <div class="one columns"> {{Math.round(food.calories/food.measure*100)}} </div>
+                            <div class="one columns"> {{Math.round(food.carbohydrates/food.measure*100)}} </div>
+                            <div class="one columns"> {{Math.round(food.fat/food.measure*100)}} </div>
+                            <div class="one columns"> {{Math.round(food.protein/food.measure*100)}} </div>
                             <a href="#" @click="removeFood(index)" v-show="showRemoveFood == index" class="one column" style="text-decoration: none;">x</a>
                         </div>
                     </div>
@@ -329,6 +329,7 @@
                 show_search_food: false,
                 mealMenuShow: -1,
                 showRemoveFood: -1,
+                showSaveFood: -1,
                 mealErrors: [],
                 foodErrors: [],
                 loggedIn: false
@@ -349,14 +350,14 @@
                 toggle_search_food: function () {
                     this.show_search_food = !this.show_search_food;
                 },
-                sendFood: function () {
-                    if (!this.validateFood()){ return; }
+                sendFood: function (food) {
+                    if (!this.validateFood(food)){ return; }
                     saveResponse = "loading...";
-                    axios.post('http://localhost:5000/api/savefood', this.food, {withCredentials: true}
+                    axios.post('http://localhost:5000/api/savefood', food, {withCredentials: true}
                     ).then(response => {
                         this.saveResponse = response.data;
                         this.getFoods();
-                        this.toggle_save_food();
+                        this.savefood = false;
                     }).catch(error => {
                         console.log(error);
                     });
@@ -437,19 +438,19 @@
                     this.mealErrors = errors;
                     return (errors.length == 0);
                 },
-                validateFood: function (){
+                validateFood: function (food){
                     // Needs all fields to be populated
                     var errors = [];
-                    if (this.food.name == "") {
+                    if (food.name == "") {
                         errors.push("Food name cannot be blank");
                     }
-                    if (this.food.measure == "" || this.food.unit == "") {
+                    if (food.measure == "" || food.unit == "") {
                         errors.push("Measure cannot be blank");
                     }
-                    if (this.food.calories == "" || this.food.carbohydrates == "" || this.food.fat == "" || this.food.protein == ""){
+                    if (food.calories == "" || food.carbohydrates == "" || food.fat == "" || food.protein == ""){
                         errors.push("Missing attribute value");
                     }
-                    this.foodErrors = errors;
+                    foodErrors = errors;
                     return (errors.length == 0);
                 },
                 addItem: function() {
