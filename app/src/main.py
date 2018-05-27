@@ -9,6 +9,7 @@ from flask import Flask, request, session
 from flask_cors import CORS
 from models import Food, Meal
 
+import usda
 import auth
 
 app = Flask(__name__)
@@ -37,6 +38,28 @@ def save_food():
             app.logger.error(ex)
             return 'Error saving food'
         return 'Food Saved'
+    else:
+        return '-'
+
+# Endpoint to save
+@app.route('/api/querydb', methods=['GET', 'POST', 'OPTIONS'])
+def querydb():
+    if request.method == 'POST':
+        try:
+            data = request.get_json()
+            if 'token' in session:
+                token = session['token']
+                user_id = auth.validate_user(token)
+            else:
+                return "Please sign in"
+
+            app.logger.debug('Received query request: ' + str(data['query']))
+            # Do the query and create response
+            query_results = usda.search_foods(data['query'], tolerance=5, logger=app.logger)
+        except Exception as ex:
+            app.logger.error(ex)
+            return 'Error querying food'
+        return json.dumps(query_results)
     else:
         return '-'
 
