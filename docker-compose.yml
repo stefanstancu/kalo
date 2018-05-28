@@ -2,9 +2,8 @@ version: '2.0'
 services:
     db:
         image: postgres:alpine
-        environment:
-            POSTGRES_PASSWORD: test
-            POSTGRES_USER: user
+        env_file:
+            - ./secrets.env
         ports:
             - 5432:5432
     backend:
@@ -12,8 +11,8 @@ services:
         environment:
             FLASK_APP: /var/www/app/src/main.py
             FLASK_DEBUG: 1
-            CLIENT_ID: 1012179851696-fkknaicl6dg4g7cplk005v5desvddovj.apps.googleusercontent.com
-            USDA_KEY: QmmNAV2Easo2xqyRTvF2DOwN1FwEUJb45nU2SgfE
+        env_file:
+            - ./secrets.env
         volumes:
             - ./app:/var/www/app
         ports:

@@ -2,6 +2,7 @@ import os
 import requests
 
 api_key = os.environ['USDA_KEY']
+
 SEARCH_URL='https://api.nal.usda.gov/ndb/search'
 NUTRIENT_URL='https://api.nal.usda.gov/ndb/nutrients'
 
