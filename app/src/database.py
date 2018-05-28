@@ -1,8 +1,13 @@
+import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
-engine = create_engine('postgresql://user:test@stancu.co:5432/user')
+username = os.environ['POSTGRES_USER']
+passwd = os.environ['POSTGRES_PASSWORD']
+
+engine = create_engine('postgresql://'+username+':'+passwd+'@stancu.co:5432/'+username)
+
 db_session = scoped_session(sessionmaker(
     autocommit=False,
     autoflush=False,
