@@ -49,32 +49,24 @@
 
 <div id="app" class="container" style="margin-top: 2.5%">
     <div class="row">
-        <div class="u-full-width">
-            <h1 style="text-align:center">KALO</h1>
-        </div>
-    </div>
-    <hr>
-    <div class="row">
-        <div class="five columns">&nbsp;</div>
         <div class="five columns">
-            <h4 style="text-align:right">{{user_name}}</h4>
+            <h1 style="text-align:left; margin-top:20px; margin-bottom:0;">KALO</h1>
+        </div>
+        <div class="five columns">
+            <h4 style="text-align:right; margin-top:40px; margin-bottom:0;">{{user_name}}</h4>
         </div>
         <div class="two columns">
-            <div class="u-pull-left">
+            <div class="u-pull-left" style="margin-top:40px; margin-bottom:0;">
                 <button v-show="loggedIn" @click="signOut" class="button">Sign Out</button>
                 <div v-show="loggedIn == false" class="g-signin2" data-onsuccess="onSignIn"></div>
             </div>
         </div>
-        <hr>
     </div>
+    <hr>
     <div v-show="loggedIn">
     <div class="row">
-        <div class="three columns">
-            <h2 style="margin:0px">Today</h2>
-        </div>
-        <div class="nine columns">
-            <button style="margin-top:10px" @click="toggle_today" v-if="show_table">Hide</button>
-            <button style="margin-top:10px" @click="toggle_today" v-else>Show</button>
+        <div class="u-full-width">
+            <h2 style="text-align:center; margin:0px">Today</h2>
         </div>
     </div>
     <div class="row">
@@ -94,30 +86,30 @@
         <tbody>
             <tr>
                 <th class="align_left">Calories</th>
-                <th v-for="meal in meals">{{meal.calories}}</th>
-                <th> {{totals.calories}} </th>
+                <th v-for="meal in meals">{{Math.round(meal.calories)}}</th>
+                <th> {{Math.round(totals.calories)}} </th>
             </tr>
             <tr>
                 <th class="align_left">Carbohydrates</th>
-                <th v-for="meal in meals">{{meal.carbohydrates}}</th>
-                <th> {{totals.carbohydrates}} </th>
+                <th v-for="meal in meals">{{Math.round(meal.carbohydrates)}}</th>
+                <th> {{Math.round(totals.carbohydrates)}} </th>
             </tr>
             <tr>
                 <th class="align_left">Fat</th>
-                <th v-for="meal in meals">{{meal.fat}}</th>
-                <th> {{totals.fat}} </th>
+                <th v-for="meal in meals">{{Math.round(meal.fat)}}</th>
+                <th> {{Math.round(totals.fat)}} </th>
             </tr>
             <tr>
                 <th class="align_left">Protein</th>
-                <th v-for="meal in meals">{{meal.protein}}</th>
-                <th> {{totals.protein}} </th>
+                <th v-for="meal in meals">{{Math.round(meal.protein)}}</th>
+                <th> {{Math.round(totals.protein)}} </th>
             </tr>
         </tbody>
         </table>
     </div>
     <div class="row">
         <div class="six columns">
-            <h4>Meal Entry</h4>
+            <h4>New Meal Entry</h4>
             <form>
                 <div class="row">
                     <label class="six columns">Meal Name</label>   
@@ -158,6 +150,16 @@
             <p v-show="saveMealResponse != 0">{{saveMealResponse}}</p>
         </div>
         <div class="six columns">
+            <p v-show="saveResponse != 0"> {{saveResponse}}</p>
+            <div class="row">
+                <h4 class="six columns">My Food  <span style="font-size: 0.6em">(/100g)</span></h4>
+                <div class="three columns">
+                    <button @click="toggle_save_food" class="button" type="button">{{show_save_food?"cancel":"custom"}}</button>
+                </div>
+                <div class="three columns">
+                    <button @click="toggle_search_food" class="button" type="button">{{show_search_food?"cancel":"search"}}</button>
+                </div>
+            </div>
             <div v-show="show_save_food">
                 <h4>Food Item</h4>
                 <form>
@@ -192,7 +194,7 @@
                         </div>
                     </div>
                     <div class="row">
-                            <button @click="sendFood(food)" type="button" class="button">SAVE</button>
+                            <button @click="sendFood(food)" type="button" class="button u-pull-right">SAVE</button>
                     </div>
                 </form>
             </div>
@@ -204,16 +206,6 @@
                         {{error}}
                     </li>
                 </ul>
-            </div>
-            <p v-show="saveResponse != 0"> {{saveResponse}}</p>
-            <div class="row">
-                <h4 class="six columns">Saved Food <span style="font-size: 0.6em">(/100g)</span></h4>
-                <div class="three columns">
-                    <button @click="toggle_save_food" class="button" type="button">{{show_save_food?"cancel":"custom"}}</button>
-                </div>
-                <div class="three columns">
-                    <button @click="toggle_search_food" class="button" type="button">{{show_search_food?"cancel":"search"}}</button>
-                </div>
             </div>
             <div v-show="show_search_food">
                 <div class="row">
@@ -254,7 +246,7 @@
                 <div style="overflow: auto; height: 200px;">
                     <div v-for="(food, index) in foods">
                         <div class="row" @mouseover="showRemoveFood = index" @mouseleave="showRemoveFood = -1">  
-                            <div class="seven columns"style="white-space: nowrap; text-overflow: ellipsis; overflow: hidden;"> {{food.name}} </div>
+                            <div class="seven columns" style="white-space: nowrap; text-overflow: ellipsis; overflow: hidden;"> {{food.name}} </div>
                             <div class="one columns"> {{Math.round(food.calories/food.measure*100)}} </div>
                             <div class="one columns"> {{Math.round(food.carbohydrates/food.measure*100)}} </div>
                             <div class="one columns"> {{Math.round(food.fat/food.measure*100)}} </div>
@@ -263,11 +255,15 @@
                         </div>
                     </div>
                     <div style="text-align:center; padding: 5%" v-show="foods.length == 0">
-                        Start by adding some food items. <br> Then you can make track meals composed of your food!
+                        Start by adding some food items. <br> Then you can track meals composed of your food!
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+    </div>
+    <div v-show="loggedIn == false">
+        <h4 style="text-align: center;"> Start by logging in with Google </h4>
     </div>
     <script>
         function onSignIn(googleUser){
@@ -447,7 +443,7 @@
                     if (food.measure == "" || food.unit == "") {
                         errors.push("Measure cannot be blank");
                     }
-                    if (food.calories == "" || food.carbohydrates == "" || food.fat == "" || food.protein == ""){
+                    if (food.calories === "" || food.carbohydrates === "" || food.fat === "" || food.protein === ""){
                         errors.push("Missing attribute value");
                     }
                     foodErrors = errors;
