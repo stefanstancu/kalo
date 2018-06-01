@@ -86,23 +86,23 @@
         <tbody>
             <tr>
                 <th class="align_left">Calories</th>
-                <th v-for="meal in meals">{{meal.calories}}</th>
-                <th> {{totals.calories}} </th>
+                <th v-for="meal in meals">{{Math.round(meal.calories)}}</th>
+                <th> {{Math.round(totals.calories)}} </th>
             </tr>
             <tr>
                 <th class="align_left">Carbohydrates</th>
-                <th v-for="meal in meals">{{meal.carbohydrates}}</th>
-                <th> {{totals.carbohydrates}} </th>
+                <th v-for="meal in meals">{{Math.round(meal.carbohydrates)}}</th>
+                <th> {{Math.round(totals.carbohydrates)}} </th>
             </tr>
             <tr>
                 <th class="align_left">Fat</th>
-                <th v-for="meal in meals">{{meal.fat}}</th>
-                <th> {{totals.fat}} </th>
+                <th v-for="meal in meals">{{Math.round(meal.fat)}}</th>
+                <th> {{Math.round(totals.fat)}} </th>
             </tr>
             <tr>
                 <th class="align_left">Protein</th>
-                <th v-for="meal in meals">{{meal.protein}}</th>
-                <th> {{totals.protein}} </th>
+                <th v-for="meal in meals">{{Math.round(meal.protein)}}</th>
+                <th> {{Math.round(totals.protein)}} </th>
             </tr>
         </tbody>
         </table>
@@ -246,7 +246,7 @@
                 <div style="overflow: auto; height: 200px;">
                     <div v-for="(food, index) in foods">
                         <div class="row" @mouseover="showRemoveFood = index" @mouseleave="showRemoveFood = -1">  
-                            <div class="seven columns"style="white-space: nowrap; text-overflow: ellipsis; overflow: hidden;"> {{food.name}} </div>
+                            <div class="seven columns" style="white-space: nowrap; text-overflow: ellipsis; overflow: hidden;"> {{food.name}} </div>
                             <div class="one columns"> {{Math.round(food.calories/food.measure*100)}} </div>
                             <div class="one columns"> {{Math.round(food.carbohydrates/food.measure*100)}} </div>
                             <div class="one columns"> {{Math.round(food.fat/food.measure*100)}} </div>
@@ -255,7 +255,7 @@
                         </div>
                     </div>
                     <div style="text-align:center; padding: 5%" v-show="foods.length == 0">
-                        Start by adding some food items. <br> Then you can make track meals composed of your food!
+                        Start by adding some food items. <br> Then you can track meals composed of your food!
                     </div>
                 </div>
             </div>
@@ -443,7 +443,7 @@
                     if (food.measure == "" || food.unit == "") {
                         errors.push("Measure cannot be blank");
                     }
-                    if (food.calories == "" || food.carbohydrates == "" || food.fat == "" || food.protein == ""){
+                    if (food.calories === "" || food.carbohydrates === "" || food.fat === "" || food.protein === ""){
                         errors.push("Missing attribute value");
                     }
                     foodErrors = errors;
