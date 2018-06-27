@@ -157,7 +157,7 @@ def get_meals():
 
             app.logger.info('getmeal request: ' + str(data))
             meals = db_session.query(Meal).\
-                    filter(Meal.date==datetime.date.today()).\
+                    filter(Meal.date>=datetime.date.today()).\
                     filter(Meal.user_id == user_id).\
                     all()
             meals = json.dumps([i.serialize for i in meals])

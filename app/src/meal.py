@@ -16,7 +16,7 @@ def food_to_meal(name, user_id, foods, app):
         app.logger.info(ex)
         return "error getting foods, has it been added?"
 
-    meal = Meal(name, user_id, datetime.date.today(), 0, 0, 0, 0)
+    meal = Meal(name, user_id, datetime.datetime.now(), 0, 0, 0, 0)
     for item in saved_food:
         meal.calories += item.calories/item.measure*foods[item.name]
         meal.carbohydrates += item.carbohydrates/item.measure*foods[item.name]
