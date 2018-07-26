@@ -3,3 +3,5 @@ __pycache__
 *.swp
 secrets.env
 alembic.ini
+node_modules/
+dist/

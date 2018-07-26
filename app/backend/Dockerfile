@@ -1,8 +1,10 @@
 FROM python:alpine
 
-COPY ./app /var/www/app
+COPY ./ /var/www/app
 
 WORKDIR /var/www/app
+
+RUN pwd && ls
 
 RUN apk --update add linux-headers musl-dev gcc postgresql-dev
 

@@ -1,26 +1,18 @@
 version: '2.0'
 services:
-    db:
-        image: postgres:alpine
-        env_file:
-            - ./secrets.env
-        ports:
-            - 5432:5432
     backend:
-        build: .
+        build: ./app/backend/
         environment:
             FLASK_APP: /var/www/app/src/main.py
             FLASK_DEBUG: 1
         env_file:
             - ./secrets.env
         volumes:
-            - ./app:/var/www/app
+            - ./app/backend/:/var/www/app
         ports:
             - "5000:5000"
 
-    nginx:
-        build: nginx
-        volumes:
-            - ./app/static:/usr/share/nginx/html
+    frontend:
+        build: ./app/frontend
         ports:
             - 80:80
