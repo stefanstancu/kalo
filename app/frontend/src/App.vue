@@ -8,7 +8,7 @@
                     <day_summary v-bind:today_meals="today_meals" v-bind:foods="foods" @refresh_meals='getMeals' @refresh_foods='getFoods'/>
                 </div>
                 <div class="six columns half-height">
-                    <weight_graph />
+                    <weight_log ref="weight_log"/>
                 </div>
             </div>
             <div class="row">
@@ -22,7 +22,7 @@ import axios from 'axios'
 import navbar from './components/navbar.vue'
 import goals from './components/goals.vue'
 import day_summary from './components/day_summary.vue'
-import weight_graph from './components/graphs/weight_graph.vue'
+import weight_log from './components/weight_log.vue'
 import 'raleway-webfont/raleway.min.css'
 import 'skeleton-css/css/skeleton.css'
 
@@ -44,7 +44,7 @@ export default {
         navbar,
         goals,
         day_summary,
-        weight_graph
+        weight_log
     },
     methods: {
         set_login: function (state) {
@@ -52,6 +52,7 @@ export default {
             if (state){
                 this.getMeals();
                 this.getFoods();
+                this.$refs.weight_log.getWeightLog();
             }
         },
         getFoods: function () {

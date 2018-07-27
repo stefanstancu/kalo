@@ -12,13 +12,14 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^0.18.0",
-    "d3": "^5.5.0",
+    "chart.js": "^2.7.2",
     "google-fonts-webpack-plugin": "^0.4.4",
     "lodash": "^4.17.10",
     "npm": "^6.1.0",
     "raleway-webfont": "^3.0.1",
     "skeleton-css": "^2.0.4",
     "vue": "^2.5.16",
+    "vue-chartjs": "^3.3.2",
     "vue-router": "^3.0.1",
     "webpack": "^4.12.1",
     "webpack-cli": "^3.0.8"

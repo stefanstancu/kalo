@@ -21,7 +21,7 @@
 </template>
 
 <script>
-    import g_signin_btn from './g-signin-btn.vue'
+    import g_signin_btn from './g_signin_btn.vue'
     import axios from 'axios'
 
     export default {
