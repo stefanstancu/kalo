@@ -1,33 +1,48 @@
 <template>
-    <div class='container'>
+    <div>
         <div class='row'>
-            <div class='two columns outline'>
-                <h2>Goals</h2>
-            </div>
             <div class='four columns'>
+                &nbsp;
+            </div>
+            <div class='eight columns'>
                 <div class='three columns outline'>
                     <h3>Calories</h3>
-                    <b>{{macro_goals.cal}}</b>
                 </div>
                 <div class='three columns outline'>
                     <h3>Carbs</h3>
-                    <b>{{macro_goals.car}}</b>
                 </div>
                 <div class='three columns outline'>
                     <h3>Fat</h3>
-                    <b>{{macro_goals.fat}}</b>
                 </div>
                 <div class='three columns outline'>
                     <h3>Protein</h3>
+                </div>
+            </div>
+        </div>
+        <div class='row'>
+            <div class='four columns outline'>
+                <h2>Goals</h2>
+            </div>
+            <div class='eight columns'>
+                <div class='three columns outline'>
+                    <b>{{macro_goals.cal}}</b>
+                </div>
+                <div class='three columns outline'>
+                    <b>{{macro_goals.car}}</b>
+                </div>
+                <div class='three columns outline'>
+                    <b>{{macro_goals.fat}}</b>
+                </div>
+                <div class='three columns outline'>
                     <b>{{macro_goals.pro}}</b>
                 </div>
             </div>
         </div>
         <div class='row'>
-            <div class='two columns outline'>
+            <div class='four columns outline'>
                 <h2>Totals</h2>
             </div>
-            <div class='four columns'>
+            <div class='eight columns'>
                 <div class='three columns outline'>
                     <b>{{totals.cal}}</b>
                 </div>
@@ -43,10 +58,10 @@
             </div>
         </div>
         <div class='row'>
-            <div class='two columns outline'>
+            <div class='four columns outline'>
                 <h2>Remaining</h2>
             </div>
-            <div class='four columns'>
+            <div class='eight columns'>
                 <div class='three columns outline'>
                     <b>{{macro_goals.cal - totals.cal}}</b>
                 </div>

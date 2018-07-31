@@ -1,7 +1,16 @@
 <template>
     <div>
         <navbar v-bind:logged_in="logged_in" @user_login_state="set_login"/>
-        <goals v-bind:macro_goals="macro_goals" v-bind:today_meals='today_meals'/>
+        <div class='container'>
+            <div class='row'>
+                <div class='six columns'>
+                    <goals v-bind:macro_goals="macro_goals" v-bind:today_meals='today_meals'/>
+                </div>
+                <div class='six columns'>
+                    <calorie_log ref='calorie_log'/>
+                </div>
+            </div>
+        </div>
         <div class='container'>
             <div class="row">
                 <div class="six columns half-height">
@@ -23,6 +32,7 @@ import navbar from './components/navbar.vue'
 import goals from './components/goals.vue'
 import day_summary from './components/day_summary.vue'
 import weight_log from './components/weight_log.vue'
+import calorie_log from './components/calorie_log.vue'
 import 'raleway-webfont/raleway.min.css'
 import 'skeleton-css/css/skeleton.css'
 
@@ -44,7 +54,8 @@ export default {
         navbar,
         goals,
         day_summary,
-        weight_log
+        weight_log,
+        calorie_log
     },
     methods: {
         set_login: function (state) {
@@ -53,6 +64,7 @@ export default {
                 this.getMeals();
                 this.getFoods();
                 this.$refs.weight_log.getWeightLog();
+                this.$refs.calorie_log.getCalorieLog();
             }
         },
         getFoods: function () {

@@ -26,7 +26,7 @@
             </table>
         </div>
         <button @click='showAddMeal = true' class='button-primary'>Add Meal</button>
-        <modal v-if='showAddMeal' @close='showAddMeal=false'>
+        <modal v-if='showAddMeal' @close='showAddMeal=false' :size='{width: "80%", height: "80%"}'>
             <add_meal v-bind:foods="foods" slot='body' @refresh_food="$emit('refresh_food')" @refresh_meals="$emit('refresh_meals')"/>
         </modal>
     </div>

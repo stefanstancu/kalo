@@ -2,7 +2,7 @@
     <transition name="modal">
         <div class="modal-mask">
           <div class="modal-wrapper">
-            <div class="modal-container">
+            <div class="modal-container" :style='style'>
 
               <div class="modal-header">
                 <slot name="header">
@@ -29,7 +29,16 @@
 
 <script>
 export default {
-    props: []
+    props: ['size'],
+    computed: {
+        style () {
+            if (this.size){
+                return 'width: ' + this.size.width + '; height: ' + this.size.height + ';';
+            } else {
+            return '';
+            }
+        }
+    }
 }
 </script>
 

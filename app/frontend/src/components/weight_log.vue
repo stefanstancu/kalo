@@ -1,18 +1,19 @@
 <template>
-    <weight_graph :chartData="datum"/>
+    <line_graph :chartData="datum"/>
 </template>
 
 <script>
-    import weight_graph from './graphs/weight_graph.vue'
+    import line_graph from './graphs/line_graph.vue'
 
     export default {
         props: [],
         components: {
-            weight_graph
+            line_graph
         },
         data: function () {
             return { 
                 datum: { }
+            }
         },
         methods: {
             getWeightLog: function () {
