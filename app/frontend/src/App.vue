@@ -7,7 +7,7 @@
                     <goals v-bind:macro_goals="macro_goals" v-bind:today_meals='today_meals'/>
                 </div>
                 <div class='six columns'>
-                    <calorie_log ref='calorie_log'/>
+                    <weight_log ref="weight_log"/>
                 </div>
             </div>
         </div>
@@ -17,7 +17,7 @@
                     <day_summary v-bind:today_meals="today_meals" v-bind:foods="foods" @refresh_meals='getMeals' @refresh_foods='getFoods'/>
                 </div>
                 <div class="six columns half-height">
-                    <weight_log ref="weight_log"/>
+                    <calorie_log ref='calorie_log'/>
                 </div>
             </div>
             <div class="row">

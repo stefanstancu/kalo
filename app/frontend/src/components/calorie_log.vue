@@ -6,10 +6,25 @@
         <div class='two columns'>
             <button class='button primary' @click='showAddWeight=true'>+</button>
         </div>
-        <modal v-if='showAddWeight' @close='showAddWeight=false' :size='{width: "50%", height: "30%"}'>
-            <div slot='body'>
-                <button class='button primary' >add weight</button>
+        <modal v-if='showAddWeight' @close='showAddWeight=false' :size='{width: "50%", height: "20%"}'>
+            <div slot='header'>
+                <h2>Log Weight</h2>
             </div>
+            <div slot='body' class='row'>
+                <div class='three columns'>
+                    <input type='number' placeholder='220' style='width:100%'></input>
+                </div>
+                <div class='two columns' style='padding-top:5px'>
+                    <label>lbs</label>
+                </div>
+                <div class='four columns'>
+                    <button class='button primary'>add weight</button>
+                </div>
+                <div class='three columns'>
+                    <button class='button primary' @click="showAddWeight=false">close</button>
+                </div>
+            </div>
+            <div slot='footer'></div>
         </modal>
     </div>
 </template>
