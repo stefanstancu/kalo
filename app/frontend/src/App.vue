@@ -1,7 +1,7 @@
 <template>
     <div>
         <navbar v-bind:logged_in="logged_in" @user_login_state="set_login"/>
-        <div class='container'>
+        <div class='container half-height'>
             <div class='row'>
                 <div class='six columns'>
                     <goals v-bind:macro_goals="macro_goals" v-bind:today_meals='today_meals'/>
@@ -11,12 +11,13 @@
                 </div>
             </div>
         </div>
-        <div class='container'>
+        <div style="padding: 1%"></div>
+        <div class='container half-height'>
             <div class="row">
-                <div class="six columns half-height">
+                <div class="six columns" >
                     <day_summary v-bind:today_meals="today_meals" v-bind:foods="foods" @refresh_meals='getMeals' @refresh_foods='getFoods'/>
                 </div>
-                <div class="six columns half-height">
+                <div class="six columns">
                     <calorie_log ref='calorie_log'/>
                 </div>
             </div>

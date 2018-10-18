@@ -5,73 +5,73 @@
                 &nbsp;
             </div>
             <div class='eight columns'>
-                <div class='three columns outline'>
+                <div class='three columns '>
                     <h3>Calories</h3>
                 </div>
-                <div class='three columns outline'>
+                <div class='three columns '>
                     <h3>Carbs</h3>
                 </div>
-                <div class='three columns outline'>
+                <div class='three columns '>
                     <h3>Fat</h3>
                 </div>
-                <div class='three columns outline'>
+                <div class='three columns '>
                     <h3>Protein</h3>
                 </div>
             </div>
         </div>
         <div class='row'>
-            <div class='four columns outline'>
+            <div class='four columns '>
                 <h2>Goals</h2>
             </div>
             <div class='eight columns'>
-                <div class='three columns outline'>
+                <div class='three columns '>
                     <b>{{macro_goals.cal}}</b>
                 </div>
-                <div class='three columns outline'>
+                <div class='three columns '>
                     <b>{{macro_goals.car}}</b>
                 </div>
-                <div class='three columns outline'>
+                <div class='three columns '>
                     <b>{{macro_goals.fat}}</b>
                 </div>
-                <div class='three columns outline'>
+                <div class='three columns '>
                     <b>{{macro_goals.pro}}</b>
                 </div>
             </div>
         </div>
         <div class='row'>
-            <div class='four columns outline'>
+            <div class='four columns '>
                 <h2>Totals</h2>
             </div>
             <div class='eight columns'>
-                <div class='three columns outline'>
+                <div class='three columns '>
                     <b>{{totals.cal}}</b>
                 </div>
-                <div class='three columns outline'>
+                <div class='three columns '>
                     <b>{{totals.car}}</b>
                 </div>
-                <div class='three columns outline'>
+                <div class='three columns '>
                     <b>{{totals.fat}}</b>
                 </div>
-                <div class='three columns outline'>
+                <div class='three columns '>
                     <b>{{totals.pro}}</b>
                 </div>
             </div>
         </div>
         <div class='row'>
-            <div class='four columns outline'>
+            <div class='four columns '>
                 <h2>Remaining</h2>
             </div>
             <div class='eight columns'>
-                <div class='three columns outline'>
+                <div class='three columns '>
                     <b>{{macro_goals.cal - totals.cal}}</b>
                 </div>
-                <div class='three columns outline'>
+                <div class='three columns '>
                     <b>{{macro_goals.car - totals.car}}</b>
                 </div>
-                <div class='three columns outline'>
+                <div class='three columns '>
                     <b>{{macro_goals.fat - totals.fat}}</b>
                 </div>
-                <div class='three columns outline'>
+                <div class='three columns '>
                     <b>{{macro_goals.pro - totals.pro}}</b>
                 </div>
             </div>
@@ -116,7 +116,7 @@ h3 {
     font-size: 1.75rem;
 }
 
-.outline{
+.{
     border: 2px;
     border-style: solid;
     border-color: #f4f4f4;

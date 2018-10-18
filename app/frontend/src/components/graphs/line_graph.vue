@@ -5,9 +5,9 @@ const { reactiveProp } = mixins
     export default {
         extends: Line,
         mixins: [reactiveProp],
-        props: ['options'],
+        props: ['style'],
         mounted() {
-            this.renderChart(this.chartData, this.options)
+            this.renderChart(this.chartData, {responsive:true, maintainAspectRatio: false})
         }
     }
 </script>
