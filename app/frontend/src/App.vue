@@ -15,7 +15,7 @@
         <div class='container half-height'>
             <div class="row">
                 <div class="six columns" >
-                    <day_summary v-bind:today_meals="today_meals" v-bind:foods="foods" @refresh_meals='getMeals' @refresh_foods='getFoods'/>
+                    <day_summary v-bind:today_meals="today_meals" v-bind:foods="foods" @refresh_meals="getMeals" @refresh_food="getFoods"/>
                 </div>
                 <div class="six columns">
                     <calorie_log ref='calorie_log'/>

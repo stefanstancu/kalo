@@ -116,7 +116,6 @@
                 <div v-for="(food, index) in search_results">
                     <div class="row" @mouseover="showSaveFood = index" @mouseleave="showSaveFood = -1">
                         <div class="seven columns" style="white-space: nowrap; text-overflow: ellipsis; overflow: hidden;"> {{food.name}} </div>
-                        <div class="one columns"> {{food.calories}} </div>
                         <div class="one columns"> {{food.carbohydrates}} </div>
                         <div class="one columns"> {{food.fat}} </div>
                         <div class="one columns"> {{food.protein}} </div>
@@ -212,12 +211,13 @@
             },
             sendFood: function (food) {
                 if (!this.validateFood(food)){ return; }
-                saveResponse = "loading...";
+                this.saveResponse = "loading...";
                 axios.post('http://localhost:5000/api/savefood', food, {withCredentials: true}
                 ).then(response => {
                     this.saveResponse = response.data;
                     this.$emit('refresh_food');
                     this.savefood = false;
+                    this.toggle_save_food();
                 }).catch(error => {
                     console.log(error);
                 });
@@ -237,7 +237,7 @@
             removeMeal: function (index) {
                 axios.post('http://localhost:5000/api/deletemeal', {id: this.meals[index].id}, {withCredentials: true}
                 ).then(reposonse => {
-                    this.getMeals();
+                    this.$emit('refresh_meals');
                 }).catch(error => {
                     console.log(error);
                 });
@@ -245,7 +245,7 @@
             removeFood: function (index) {
                 axios.post('http://localhost:5000/api/deletefood', {id: this.foods[index].id}, {withCredentials: true}
                 ).then(reposonse => {
-                    this.getFoods();
+                    this.$emit('refresh_food');
                 }).catch(error => {
                     console.log(error);
                 });

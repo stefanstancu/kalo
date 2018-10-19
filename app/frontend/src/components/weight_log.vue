@@ -1,5 +1,5 @@
 <template>
-        <line_graph :chartData="datum" :style="style"/>
+        <line_graph :chartData="datum" :style="graph_style"/>
 </template>
 
 <script>
@@ -13,7 +13,7 @@
         data: function () {
             return { 
                 datum: { },
-                style: { 
+                graph_style: { 
                     position: 'relative',
                     height: '38vh'
                 }

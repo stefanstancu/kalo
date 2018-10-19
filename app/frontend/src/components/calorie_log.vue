@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class='ten columns'>
-            <line_graph :chartData="datum" :style="style"/>
+            <line_graph :chartData="datum" :style="graph_style"/>
         </div>
         <div class='two columns'>
             <button class='button primary' @click='showAddWeight=true'>+</button>
@@ -42,7 +42,7 @@
         data: function () {
             return { 
                 datum: { },
-                style: {
+                graph_style: {
                     position: 'relative',
                     height: '38vh'
                 },
