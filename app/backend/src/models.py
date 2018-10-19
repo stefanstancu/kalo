@@ -101,3 +101,34 @@ class Meal(Base):
                 'protein': self.protein,
                 'price': self.price
                 }
+
+class Weight(Base):
+    __tablename__ = 'weight'
+    id = Column(Integer, primary_key=True)
+    date = Column(Date, nullable=False)
+    user_id = Column(String, nullable=False)
+    kg = Column(Float)
+    lbs = Column(Float)
+
+    def __init__(self, user_id, date, kg, lbs):
+        self.date = date
+        self.kg = kg
+        self.lbs = lbs
+        self.user_id = user_id
+
+    def __repr__(self):
+        return 'user: {}\n date:{}\n kg: {}\n lbs: {}\n'.format(
+                self.user_id,
+                self.date,
+                self.kg,
+                self.lbs
+                )
+    @property
+    def serialize(self):
+        """Return a dict of the object for returning to front-end"""
+        return {
+                'date': self.date,
+                'kg': self.kg,
+                'lbs': self.lbs
+                }
+

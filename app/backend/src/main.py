@@ -7,7 +7,7 @@ from os import sys
 from database import db_session
 from flask import Flask, request, session
 from flask_cors import CORS
-from models import Food, Meal
+from models import Food, Meal, Weight
 
 import usda
 import auth
@@ -189,6 +189,30 @@ def get_foods():
             app.logger.error(ex)
             return 'Error getting foods'
         return foods
+    else:
+        return 'success'
+
+# Endpoint to request the weight history of the user
+@app.route('/api/getweight', methods=['GET', 'POST', 'OPTIONS'])
+def get_weight():
+    if request.method == 'POST':
+        try:
+            app.logger.info('getweight request')
+            
+            if 'token' in session:
+                token = session['token']
+                user_id = auth.validate_user(token)
+            else:
+                return "Please sign in"
+
+            comp_date = datetime.now() - timedelta(hours=24*7)
+            weight = db_session.query(Weight).filter(Weight.date > comp_date).all()
+            weight = json.dumps([i.serialize for i in weight])
+            app.logger.info(weight)
+        except Exception as ex:
+            app.logger.error(ex)
+            return 'Error getting weight'
+        return weight
     else:
         return 'success'
 
