@@ -1,5 +1,6 @@
 <template>
     <div>
+        <h2 style="text-align: center;">Macros</h2>
         <div class='row'>
             <div class='four columns'>
                 &nbsp;
@@ -111,6 +112,9 @@
 </script>
 
 <style scoped>
+h2 {
+    text-align: left;
+}
 h3 {
     margin-bottom: 5px;
     font-size: 1.75rem;

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h2>Today</h2>
+        <h2>Today's Meals</h2>
         <div id='wrapper'>
             <table>
             <thead>
