@@ -205,8 +205,11 @@ def get_weight():
             else:
                 return "Please sign in"
 
-            comp_date = datetime.now() - timedelta(hours=24*7)
-            weight = db_session.query(Weight).filter(Weight.date > comp_date).all()
+            comp_date = datetime.datetime.now() - datetime.timedelta(hours=24*7)
+            weight = db_session.query(Weight).\
+                    filter(Weight.date > comp_date).\
+                    filter(Weight.user_id == user_id).\
+                    all()
             weight = json.dumps([i.serialize for i in weight])
             app.logger.info(weight)
         except Exception as ex:
@@ -215,6 +218,32 @@ def get_weight():
         return weight
     else:
         return 'success'
+
+# Endpoint to save new meal
+@app.route('/api/saveweight', methods=['GET', 'POST', 'OPTIONS'])
+def save_weight():
+    if request.method == 'POST':
+        try:
+            data = request.get_json()
+            if 'token' in session:
+                token = session['token']
+                user_id = auth.validate_user(token)
+            else:
+                return "Please sign in"
+
+            app.logger.debug('saveweight data: ' + str(data))
+
+            weight = Weight(user_id, datetime.date.today(), float(data['measure'])/2.20462, float(data['measure']))
+
+            db_session.add(weight)
+            db_session.commit()
+
+        except Exception as ex:
+            app.logger.error(ex)
+            return 'Error saving weight'
+        return 'Weight Saved'
+    else:
+        return '-'
 
 # Login endpoint
 @app.route('/api/login', methods=['GET', 'POST', 'OPTIONS'])

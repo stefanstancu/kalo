@@ -127,7 +127,7 @@ class Weight(Base):
     def serialize(self):
         """Return a dict of the object for returning to front-end"""
         return {
-                'date': self.date,
+                'date': self.date.strftime('%d-%m-%Y'),
                 'kg': self.kg,
                 'lbs': self.lbs
                 }

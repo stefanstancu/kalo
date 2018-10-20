@@ -8,6 +8,11 @@ const { reactiveProp } = mixins
         props: ['style'],
         mounted() {
             this.renderChart(this.chartData, {responsive:true, maintainAspectRatio: false})
+        },
+        methods: {
+            render: function () {
+                this.renderChart(this.chartData, {responsive:true, maintainAspectRatio: false})
+            }
         }
     }
 </script>
