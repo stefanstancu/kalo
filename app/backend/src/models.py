@@ -94,7 +94,7 @@ class Meal(Base):
         return {
                 'id': self.id,
                 'name': self.name,
-                'date': str(self.date),
+                'date': self.date.strftime('%d-%m-%Y'),
                 'calories': self.calories,
                 'carbohydrates': self.carbohydrates,
                 'fat': self.fat,
@@ -132,3 +132,28 @@ class Weight(Base):
                 'lbs': self.lbs
                 }
 
+class Cout(Base):
+    __tablename__ = "calories_out"
+    id = Column(Integer, primary_key=True)
+    date = Column(Date, nullable=False)
+    user_id = Column(String, nullable=False)
+    cout = Column(Float)
+
+    def __init__(self, user_id, date, cout):
+        self.date = date
+        self.cout = cout
+        self.user_id = user_id
+
+    def __repr__(self):
+        return 'user: {}\n date:{}\n cout: {}\n '.format(
+                self.user_id,
+                self.date,
+                self.cout
+                )
+    @property
+    def serialize(self):
+        """Return a dict of the object for returning to front-end"""
+        return {
+                'date': self.date.strftime('%d-%m-%Y'),
+                'cout': self.cout
+                }

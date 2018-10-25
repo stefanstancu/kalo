@@ -7,7 +7,7 @@ from os import sys
 from database import db_session
 from flask import Flask, request, session
 from flask_cors import CORS
-from models import Food, Meal, Weight
+from models import Food, Meal, Weight, Cout
 
 import usda
 import auth
@@ -102,7 +102,7 @@ def save_meal():
                     return "Please sign in"
 
                 app.logger.debug('savemeal data: ' + str(data))
-                meal = food_to_meal(data['name'], user_id, data['items'], app) 
+                meal = food_to_meal(data['name'], user_id, data['items'], data['date'], app) 
                 if isinstance(meal, str):
                     return meal
 
@@ -242,6 +242,93 @@ def save_weight():
             app.logger.error(ex)
             return 'Error saving weight'
         return 'Weight Saved'
+    else:
+        return '-'
+
+# Endpoint to request the weight history of the user
+@app.route('/api/getcalories', methods=['GET', 'POST', 'OPTIONS'])
+def get_cout():
+    if request.method == 'POST':
+        try:
+            app.logger.info('getcout request')
+            
+            if 'token' in session:
+                token = session['token']
+                user_id = auth.validate_user(token)
+            else:
+                return "Please sign in"
+
+            comp_date = datetime.datetime.now() - datetime.timedelta(hours=24*7)
+
+            cal_out = db_session.query(Cout).\
+                    filter(Cout.date > comp_date).\
+                    filter(Cout.user_id == user_id).\
+                    all()
+
+            meals = db_session.query(Meal).\
+                    filter(Meal.date > comp_date).\
+                    filter(Meal.user_id == user_id).\
+                    all()
+
+            cout = {}
+            for c in cal_out:
+                date = c.serialize['date']
+                if date not in cout:
+                    cout[date] = 0
+                cout[date] += c.cout
+
+            cin = {}
+            for meal in meals:
+                date = meal.serialize['date']
+                if date not in cin:
+                    cin[date] = 0
+                cin[date] += meal.calories
+
+            data = {'calories_out': cout, 'calories_in': cin}
+            data = json.dumps(data)
+
+            app.logger.info(data)
+        except Exception as ex:
+            app.logger.error(ex)
+            return 'Error getting calories'
+        return data
+    else:
+        return 'success'
+
+# Endpoint to save cout
+@app.route('/api/savecout', methods=['GET', 'POST', 'OPTIONS'])
+def save_cout():
+    if request.method == 'POST':
+        try:
+            data = request.get_json()
+            if 'token' in session:
+                token = session['token']
+                user_id = auth.validate_user(token)
+            else:
+                return "Please sign in"
+
+            app.logger.debug('savecout data: ' + str(data))
+
+            cout = db_session.query(Cout).\
+                    filter(Cout.date == datetime.datetime.strptime(data['date'], '%Y-%m-%d')).\
+                    filter(Cout.user_id == user_id).\
+                    all()
+
+            if len(cout) == 0:
+                app.logger.debug('No cout was found')
+                cout = Cout(user_id, data['date'], float(data['measure']))
+                db_session.add(cout)
+            else:
+                app.logger.debug(cout)
+                cout[0].cout = float(data['measure'])
+                app.logger.debug(cout)
+
+            db_session.commit()
+
+        except Exception as ex:
+            app.logger.error(ex)
+            return 'Error saving calories'
+        return 'Calories saved'
     else:
         return '-'
 
